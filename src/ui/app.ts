@@ -137,6 +137,7 @@ export class AppView extends View<AppEvent> {
     const lastPosition = this.lastPosition
     
     if (!lastPosition || lastPosition.x != position.x || lastPosition.y != position.y) {
+      this.lastPosition = position
       lastOf(this.chatRooms)?.setPosition(position)
     }
   }
