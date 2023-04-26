@@ -1,97 +1,174 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --red: #ff2d55;
+  --red-bright: #ff3d61;
+  --white: #ffffff;
+  --white-dark: #f3f2f5;
+  --black: #000000;
+  --orange: #EE834A;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --page-bg: var(--white-dark);
+  --page-fg: var(--black);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  --box-bg: var(--white);
+  --box-fg: var(--black);
+
+  --button-bg: var(--red);
+  --button-bg-hover: var(--red-bright);
+  --button-fg: var(--white);
+
+  --link-fg: #EE834A;
+
+  /* --secondary: #f3f2f5;
+  --secondary-hover: #ecebed;
+  --secondary-on-modal: #f3f2f5;
+  --secondary-on-modal-hover: #ecebed;
+  --card-on-modal: #fff;
+  --text: #16141a;
+  --secondary-text: #676370;
+  --text-on-secondary: #16141a;
+   */
+  --border-radius: 4px;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+html {
+  background-color: var(--page-bg);
+  
+  font-family: system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--page-fg);
 }
 
 body {
-  margin: 0;
+  margin: auto;
+  max-width: 720px;
+  padding-bottom: 120px;
+}
+
+header {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+header img {
+  height: 100%;
+}
+
+header h1 {
+  margin: 0;
+  font-weight: normal;
+}
+
+table {
+  width: 100%;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  margin-bottom: 0.7em;
+  font-size: 1.8em;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+h2 {
+  font-size: 1.4em;
+  margin-bottom: 0.3em;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
+a {
+  color: var(--link-fg);
+  text-decoration: underline;
 }
 
-.card {
-  padding: 2em;
+table {
+  border-spacing: 1em 0.5em;
 }
 
-.read-the-docs {
-  color: #888;
+th {
+  text-align: left;
+}
+
+code {
+  display: inline-block;
+  padding: 1px 4px;
+  background-color: var(--white-dark);
+  border-radius: var(--border-radius);
+}
+
+.box {
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  
+  color: var(--box-fg);
+  background-color: var(--box-bg);
+  
+  border-radius: var(--border-radius);
+}
+
+.box .buttons {
+  display: flex;
+  justify-content: right;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  min-width: 8em;
+  padding: 10px;
+  
+  font-size: 0.8em;
+  color: var(--button-fg);
+  text-transform: uppercase;
+  
+  background-color: var(--button-bg);
+  border: 0;
+  border-radius: var(--border-radius);
+  letter-spacing: 0.5px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:hover {
+  background-color: var(--button-bg-hover);
+}
+
+.box label {
+  box-sizing: border-box;
+  padding: 2px 12px;
+  display: flex;
+  align-items: center;
+
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  background-color: var(--white-dark);
+  font-size: 0.85em;
+}
+
+.box label + input {
+  margin-left: -8px;
+  padding: 2px 8px;
+  border: 1px solid var(--white-dark);
+  border-left: 0;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.box input[type=number] {
+  width: 3em;
+  text-align: center;
+}
+
+.box input.wide {
+  width: 100%;
+}
+
+.box .step {
+  display: none;
+  opacity: 0;
+  transition: opacity ease-out 0.25s;
+}
+
+.chat-log {
+  height: 12em;
+  padding: 8px 4px;
+  overflow-y: scroll;
+  border: 1px solid var(--white-dark);
+  border-radius: var(--border-radius);
 }
