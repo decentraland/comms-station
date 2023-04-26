@@ -1,13 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/src/normalize.css">
+  <link rel="stylesheet" href="/src/style.css">
+
+  <title>DCL Comms</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <div id="end"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+<template id="template-app">
+  <div id="app">
+    <header>
+      <img src="/logo.svg">
+      <h1>Decentraland</h1>
+    </header>
+  </div>
+</template>
+
+<template id="template-welcome">
+  <div id="welcome" class="box">
+    <div class="content">
+      <h1>Welcome to the Comms Station!</h1>
+      <p>
+        This is an educational Decentraland communications client, meant for developers to
+        understand the inner workings of the system.
+
+        It can discover <strong>realms</strong>, connect to their <strong>RPC</strong> interface,
+        use <strong>Archipelago</strong> to get an <strong>island</strong> assignment and join
+        the island to <strong>chat</strong> with nearby players.
+      </p>
+      <p>
+        If you're familiar with these concepts, go ahead and start the station. If not, the
+        <a>comms documentation overview</a> is a better place to begin.
+      </p>
+      <p>
+        You can follow along with the station's <a>source code</a>, which closely mirrors what
+        you'll see on-screen.
+      </p>
+
+      <div class="buttons">
+        <button class="submit" data-ref="start">Start</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-create-identity">
+  <div id="create-identity" class="step box">
+    <div class="content">
+      <h2>Create an Identity</h2>
+      <p>
+        Players in Decentraland have a unique <strong>identity</strong>, given by an Ethereum address. The
+        associated private key can be used to prove this identity when services require it.
+
+        Let's generate a random, disposable identity for this session.
+      </p>
+      <div class="buttons">
+        <button class="submit" data-ref="create">Create disposable identity</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-discover-realms">
+  <div id="discover-realms" class="step box">
+    <h2>Discover Realms</h2>
+    <div class="content">
+      <p>
+        Decentraland is organized into <strong>realms</strong>, i.e. peer servers in the distributed network. Some
+        realms are maintained by the Decentraland Foundation, others are community contributions.
+      </p>
+      <p>
+        These servers know about each other. We can connect to the Foundation's main realm and
+        get a list of all alternatives using the <a>lambdas/explore/realms</a> endpoint.
+      </p>
+      <div class="buttons">
+        <button class="submit" data-ref="discover">Discover Realms</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-select-realm">
+  <div id="select-realm" class="step box">
+    <h2>Select a Realm</h2>
+    <div class="content">
+      <p>
+        We've found a number of realms, each hosted in a different server. Let's connect to one
+        with a healthy number of currently online players.
+      </p>
+
+      <table class="realms" data-ref="realms">
+        <tr>
+          <th>Name</th>
+          <th>URL</th>
+          <th>Players</th>
+          <th></th>
+        </tr>
+      </table>
+    </div>
+  </div>
+</template>
+
+<template id="template-select-realm-row">
+  <tr>
+    <td data-ref="name"></td>
+    <td data-ref="url"></td>
+    <td data-ref="users"></td>
+    <td style="text-align: right"><button data-ref="connect">Connect</button></td>
+  </tr>
+</template>
+
+<template id="template-request-challenge">
+  <div id="request-challenge" class="step box">
+    <h2>Start Authentication</h2>
+    <div class="content">
+      <p>
+        Before we can access any services, we must prove our identity by completing a <a>challenge</a>.
+        The server will send us a randomly generated string, and we will sign it with our private
+        key.
+      </p>
+      <div class="buttons">
+        <button class="submit" data-ref="request">Request Challenge</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-respond-challenge">
+  <div id="respond-challenge" class="step box">
+    <h2>Complete Authentication</h2>
+    <div class="content">
+      <p>
+        TODO: time limit?
+        We were sent the random string <code data-ref="challenge"></code>. We'll use our
+        private key to produce a valid <a>authentication chain</a>, ending with a signature for
+        this string.
+      </p>
+      <p>
+        The realm server will validate the chain in our response and verify all signatures before
+        allowing us to continue.
+      </p>
+      <div class="buttons">
+        <button class="submit" data-ref="respond">Respond Challenge</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-start-heartbeat">
+  <div id="start-heartbeat" class="step box">
+    <h2>Report Position</h2>
+    <div class="content">
+      <p>
+        We are now connected to a realm and have successfully authenticated. The next step is
+        getting our first island assignment from Archipelago. For this, we have to send our
+        position in the world map.
+      </p>
+      <p>
+        We must continue to report our position about once per second, otherwise Archipelago will
+        assume we're going offline. This periodic update is called a <a>heartbeat</a>.
+      </p>
+
+      <div class="buttons">
+        <button class="submit" data-ref="start">Start heartbeat</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-await-island">
+  <div id="await-island" class="step box">
+    <h2>Wait for Island Assignment</h2>
+    TODO: request specific island?
+    <div class="content">
+      <p>
+        We're now sending our periodic position updates and waiting for Archipelago to assign us
+        to an island, where we'll be able to exchange messages with nearby players. Let's wait...
+      </p>
+    </div>
+  </div>
+</template>
+
+<template id="template-join-island">
+  <div id="join-island" class="step box">
+    <h2>Join Island</h2>
+    <div class="content">
+      <p>
+        Done! We've been assigned to island <code data-ref="island"></code>, which uses the
+        <code data-ref="adapter"></code> adapter.
+      </p>
+      <p>
+        Our island is accepting websocket connections at <code data-ref="uri"></code>.
+      </p>
+
+      <div class="buttons">
+        <button class="submit" data-ref="join">Connect</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-chat-room">
+  <div class="chat-room step box">
+    <div class="content">
+      <p>
+        We are now connected to island <span data-ref="island"></span> using the
+        <span data-ref="adapter"></span> adapter.
+
+        There's <span data-ref="participants"></span> in this island. Talk to them!
+      </p>
+
+      <div class="chat-log" data-ref="log">
+        <em>You joined the island.</em>
+      </div>
+
+      <div class="buttons">
+        <label>Message</label>
+        <input type="text" class="wide" data-ref="chat-input">
+
+        <button class="submit" data-ref="send">Send</button>
+      </div>
+
+      <div class="buttons">
+        <label>x</label>
+        <input type="number" data-ref="x-input">
+
+        <label>y</label>
+        <input type="number" data-ref="y-input">
+
+        <label>island?</label>
+        <input type="text" data-ref="island-input" placeholder="optional">
+
+        <button class="submit" data-ref="teleport">Teleport</button>
+      </div>
+
+      <div class="stats">
+        <span data-ref="npings">0</span> pings |
+        <span data-ref="npongs">0</span> pongs |
+        <span data-ref="nmovements">0</span> movements
+      </div>
+    </div>
+  </div>
+</template>
+
 </html>
