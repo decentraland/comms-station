@@ -18,7 +18,7 @@ export class LivekitAdapter extends Adapter {
     const token = url.searchParams.get('access_token')!
     url.searchParams.delete('access_token')
 
-    this.uri = uri
+    this.uri = url.toString()
     this.token = token
   }
 
