@@ -23,7 +23,6 @@ import { Position } from '@dcl/protocol/out-ts/decentraland/common/vectors.gen'
 // start inserts `AppView` into the DOM and takes the user through a series of steps, each running
 // some background code and then awaiting a promise from the UI to continue.
 async function start() {
-  console.log("Initializing interface")
   const app = new AppView()
   document.getElementById('app')!.appendChild(app.$root)
 
@@ -63,9 +62,7 @@ async function start() {
 
   // Sign the challenge string using the private key in our `identity`:
   const authChain = await Authenticator.signPayload(identity, challengeToSign)
-
-  const selfInfo = await archipelagoClient.respondChallenge(authChain)
-  console.log("Welcome as peer", selfInfo)
+  await archipelagoClient.respondChallenge(authChain)
 
   // Show an explanation of the heartbeat timer, and wait for the user to click START HEARTBEAT:
   await app.askStartHeartbat()
