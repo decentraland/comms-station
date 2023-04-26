@@ -159,7 +159,7 @@ button:hover {
   width: 100%;
 }
 
-.box .step {
+.box.step {
   display: none;
   opacity: 0;
   transition: opacity ease-out 0.25s;
