@@ -56,9 +56,10 @@ header img {
   height: 100%;
 }
 
-header h1 {
+header h1, header p {
   margin: 0;
   font-weight: normal;
+  vertical-align: baseline;
 }
 
 #app {
@@ -175,4 +176,45 @@ button:hover {
   overflow-y: scroll;
   border: 1px solid var(--white-dark);
   border-radius: var(--border-radius);
+}
+
+.modal {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 10;
+  padding: 24px;
+
+  display: none;
+}
+
+.modal .container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
+
+.modal .backdrop {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+
+  opacity: 0.8;
+  background-color: var(--black);
+}
+
+.modal .content {
+  max-width: 780px;
+  z-index: 11;
+}
+
+.request-profile {
+  width: 50em;
+  max-height: 30em;
+  overflow: scroll;
+}
+
+.request-profile pre {
+  padding: 12px;
+  background-color: var(--page-bg);
 }

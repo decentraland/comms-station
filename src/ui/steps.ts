@@ -220,7 +220,7 @@ export class JoinIslandView extends StepView<JoinIslandEvent> {
 export type ChatRoomEvent = 
   | { type: 'send', text: string }
   | { type: 'teleport', x: number, y: number, island?: string }
-
+  | { type: 'request-profile', address: string }
 
 export class ChatRoomView extends StepView<ChatRoomEvent> {
   $root = cloneTemplate('template-chat-room')
@@ -251,11 +251,18 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
   }
 
   addMessage(sender: string, text: string) {
-    this.appendToLog(sender, text)
+    const chatMessage = new ChatMessageView()
+
+    chatMessage.setSender(sender)
+    chatMessage.setText(text)
+    chatMessage.events.on('click-sender', () => this.emit({ type: 'request-profile', address: sender }))
+
+    this.$log.appendChild(chatMessage.$root)
+    this.$log.scrollTo(0, chatMessage.$root.scrollHeight)
   }
 
   addEmote(sender: string, emoteId: string) {
-    this.appendToLog(sender, "--emote-- " + emoteId)
+    this.addMessage(sender, "emote/" + emoteId)
   }
 
   setPosition(position: Position, island?: string) {
@@ -267,36 +274,19 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
   private onSendClick = () => {
     const text = this.$chatInput.value
     
-    this.appendToLog("You", text)
+    this.addMessage("You", text)
     this.emit({ type: 'send', text })
 
     this.$chatInput.value = ""
   }
 
   private onTeleportClick = () => {
-    this.appendToLog("You", `Teleporting to bla`)
+    const x = parseInt(this.$xInput.value)
+    const y = parseInt(this.$yInput.value)
+    const island = this.$islandInput.value
 
-    this.emit({ 
-      type: 'teleport', 
-      x: parseInt(this.$xInput.value),
-      y: parseInt(this.$yInput.value),
-      island: this.$islandInput.value
-    })
-  }
-
-  private appendToLog(title: string, text: string) {
-    const $title = document.createElement('strong')
-    $title.innerText = title + ": "
-    
-    const $text = document.createElement('span')
-    $text.innerText = text
-
-    const $div = document.createElement('div')
-    $div.appendChild($title)
-    $div.appendChild($text)
-
-    this.$log.appendChild($div)
-    this.$log.scrollTo(0, $div.scrollHeight)
+    this.addMessage("You", `Teleporting to (${x}, ${y})`)
+    this.emit({ type: 'teleport', x, y, island })
   }
 
   private get $chatInput()  : HTMLInputElement { return this.$ref('chat-input') }
@@ -311,4 +301,32 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
   private get $nPings()    : HTMLElement { return this.$ref('npings') }
   private get $nPongs()    : HTMLElement { return this.$ref('npongs') }
   private get $nMovements(): HTMLElement { return this.$ref('nmovements') }
+}
+
+
+type ChatMessageEvent = 
+  | { type: 'click-sender', address: string }
+
+export class ChatMessageView extends View<ChatMessageEvent> {
+  $root = cloneTemplate('template-chat-room-message')
+
+  constructor() {
+    super()
+    this.$sender.addEventListener('click', this.onSenderClick)
+  }
+
+  setSender(sender: string) {
+    this.$sender.innerText = sender
+  }
+
+  setText(text: string) {
+    this.$text.innerText = text
+  }
+  
+  private onSenderClick = () => {
+    this.emit({ type: 'click-sender', address: this.$sender.innerText })
+  }
+
+  private get $sender(): HTMLAnchorElement { return this.$ref('sender') }
+  private get $text(): HTMLElement { return this.$ref('text') }
 }

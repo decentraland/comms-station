@@ -15,10 +15,13 @@ import {
   StartHeartbeatView,
   WelcomeView
 } from "./steps"
+import { RequestProfileView } from "./profile"
+import { ModalView } from "./modal"
 
 
 export type AppEvent =
   | { type: 'send-chat', text: string }
+  | { type: 'request-profile', address: string }
   | { type: 'teleport', position: Position, island?: string }
 
 
@@ -37,14 +40,17 @@ export class AppView extends View<AppEvent> {
     private startHeartbeat = new StartHeartbeatView(),
     private awaitIsland = new AwaitIslandView(),
     private joinIslands = new Array<JoinIslandView>(),
-    private chatRooms = new Array<ChatRoomView>()) {
+    private chatRooms = new Array<ChatRoomView>(),
+    private requestProfileModal = new ModalView(new RequestProfileView())) {
     super()
   }
 
   async askStart() {
+    this.$root.appendChild(this.requestProfileModal.$root)
+    
     this.$root.appendChild(this.welcome.$root)
     this.welcome.show()
-    
+
     await this.welcome.events.next('start')
   }
 
@@ -129,6 +135,10 @@ export class AppView extends View<AppEvent> {
       this.emit({ type: 'teleport', position: {x, y, z: 0}, island })
     )
 
+    nextView.events.on('request-profile', ({ address }) => {
+      this.showRequestProfile(address)
+    })
+
     this.$root.appendChild(nextView.$root)
     nextView.show()
   }
@@ -140,6 +150,23 @@ export class AppView extends View<AppEvent> {
       this.lastPosition = position
       lastOf(this.chatRooms)?.setPosition(position)
     }
+  }
+  
+  setRequestedProfile(profile: any) {
+    this.requestProfileModal.content.setProfile(profile)
+  }
+
+  private showRequestProfile(address: string) {
+    const requestProfile = this.requestProfileModal.content
+    
+    requestProfile.setAddress(address)
+    requestProfile.setProfile(null)
+    
+    requestProfile.events.on('request', ev => {
+      this.emit({ type: 'request-profile', address })
+    })
+
+    this.requestProfileModal.show()
   }
 
   handleMessage(sender: string, msg: AdapterMessage) {

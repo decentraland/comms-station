@@ -21,7 +21,7 @@
   <div id="app">
     <header>
       <img src="/logo.svg">
-      <h1>Decentraland</h1>
+      <h1>Decentraland | <small>Comms Demo Station</small></h1>
     </header>
   </div>
 </template>
@@ -29,7 +29,7 @@
 <template id="template-welcome">
   <div id="welcome" class="box">
     <div class="content">
-      <h1>Welcome to the Comms Station!</h1>
+      <h1>Welcome!</h1>
       <p>
         This is an educational Decentraland communications client, meant for developers to
         understand the inner workings of the system.
@@ -141,7 +141,6 @@
     <h2>Complete Authentication</h2>
     <div class="content">
       <p>
-        TODO: time limit?
         We were sent the random string <code data-ref="challenge"></code>. We'll use our
         private key to produce a valid <a>authentication chain</a>, ending with a signature for
         this string.
@@ -181,12 +180,12 @@
 <template id="template-await-island">
   <div id="await-island" class="step box">
     <h2>Wait for Island Assignment</h2>
-    TODO: request specific island?
     <div class="content">
       <p>
         We're now sending our periodic position updates and waiting for Archipelago to assign us
-        to an island, where we'll be able to exchange messages with nearby players. Let's wait...
+        to an island, where we'll be able to exchange messages with nearby players.
       </p>
+      <p>Let's wait...</p>
     </div>
   </div>
 </template>
@@ -249,6 +248,46 @@
         <span data-ref="npongs">0</span> pongs |
         <span data-ref="nmovements">0</span> movements
       </div>
+    </div>
+  </div>
+</template>
+
+<template id="template-chat-room-message">
+  <div class="chat-room-message">
+    <a data-ref="sender"></a>
+    <p data-ref="text"></p>
+  </div>
+</template>
+
+<template id="template-request-profile">
+  <div class="request-profile box">
+    <div data-ref="explanation" class="request">
+      <h2>Request Profile</h2>
+      <p>
+        You can get a peer's profile (in this case, <span data-ref="address"></span>) by sending
+        a <code>ProfileRequest</code>. They should quickly send back a <code>ProfileResponse</code>.
+      </p>
+
+      <div class="buttons">
+        <button class="submit" data-ref="send">Request Profile</button>
+      </div>
+    </div>
+
+    <pre data-ref="profile"></pre>
+  </div>
+</template>
+
+<template id="template-identity-created">
+  <div class="identity-created step box">
+    You created
+  </div>
+</template>
+
+<template id="template-modal">
+  <div class="modal">
+    <div data-ref="backdrop" class="backdrop"></div>
+    <div class="container">
+      <div data-ref="content" class="content"></div>
     </div>
   </div>
 </template>

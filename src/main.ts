@@ -4,7 +4,7 @@ import { createDisposableIdentity } from './util/identity'
 import { findRealms, ArchipelagoClient } from './services/archipelago'
 import { Authenticator } from '@dcl/crypto'
 import { LivekitAdapter } from './adapters/livekit'
-import { Adapter } from './adapters/base'
+import { Adapter, AdapterEvent } from './adapters/base'
 import { setAsyncInterval as setAwaitedInterval } from './util'
 import { AppView } from './ui/app'
 import { Position } from '@dcl/protocol/out-ts/decentraland/common/vectors.gen'
@@ -108,6 +108,20 @@ async function start() {
     app.events.on('teleport', ev => {
       wantedPosition = ev.position
       wantedIsland = ev.island
+    })
+
+    // Listen for address inspection requests coming from the UI, and request profiles:
+    app.events.on('request-profile', ({ address }) => {
+      adapter.sendProfileRequest({ address: address, profileVersion: 0 }) // TODO explain 0
+
+      const onMessage = (ev: AdapterEvent) => {
+        if (ev.type == 'message' && ev.address == address && ev.message.$case == 'profileResponse') {
+          adapter.events.off('message', onMessage)
+          app.setRequestedProfile(JSON.parse(ev.message.profileResponse.serializedProfile))
+        }
+      }
+
+      adapter.events.on('message', onMessage)
     })
 
     // Show the chat box, and update the current position in the UI:
