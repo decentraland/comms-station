@@ -23,7 +23,7 @@ export interface Island {
   id: string
   adapter: string
   uri: string
-  population: number
+  peers: string[]
 }
 
 // Realm is a Decentraland server.
@@ -118,16 +118,20 @@ export class ArchipelagoClient {
     this.subs.push(sub)
 
     setOnNextListener(comms.getSystemMessages(sub), message => {
-      const obj = IslandChangedMessage.decode(message.payload)
+      const payload = IslandChangedMessage.decode(message.payload)
 
-      const adapter = obj.connStr.split(":", 1)[0]
-      const id = obj.islandId
-      const uri = obj.connStr.slice(adapter.length + 1)
-      const population = Object.keys(obj.peers).length
+      const adapter = payload.connStr.split(":", 1)[0] // e.g. livekit:https://...
+      const id = payload.islandId
+      const uri = payload.connStr.slice(adapter.length + 1)
+      const peers = Object.keys(payload.peers)
+
+      if (adapter !== 'livekit') {
+        throw new Error("Only livekit is supported")
+      }
       
       // TODO: the `listener` is only accessible from this closure, and thus can't be removed. We
       // rely on cancelling subscriptions for that, but we should keep a list of listeners.
-      listener({ id, adapter, uri, population })
+      listener({ id, adapter, uri, peers })
     })
   }
 

@@ -125,7 +125,7 @@ async function start() {
     })
 
     // Show the chat box, and update the current position in the UI:
-    app.showChat()
+    app.showChat(island)
     app.setPosition(wantedPosition)
   })
 

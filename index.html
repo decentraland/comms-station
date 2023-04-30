@@ -195,7 +195,7 @@
     <h2>Join Island</h2>
     <div class="content">
       <p>
-        Done! We've been assigned to island <code data-ref="island"></code>, which uses the
+        We've been assigned to island <code data-ref="island"></code>, which uses the
         <code data-ref="adapter"></code> adapter.
       </p>
       <p>
@@ -213,10 +213,10 @@
   <div class="chat-room step box">
     <div class="content">
       <p>
-        We are now connected to island <span data-ref="island"></span> using the
-        <span data-ref="adapter"></span> adapter.
+        We are now connected to island <code data-ref="island"></code> using the
+        <code data-ref="adapter"></code> adapter.
 
-        There's <span data-ref="participants"></span> in this island. Talk to them!
+        There's <code data-ref="npeers"></code> other clients in this island. Talk to them!
       </p>
 
       <div class="chat-log" data-ref="log">
@@ -255,7 +255,7 @@
 <template id="template-chat-room-message">
   <div class="chat-room-message">
     <a data-ref="sender"></a>
-    <p data-ref="text"></p>
+    <span data-ref="text"></span>
   </div>
 </template>
 
@@ -264,8 +264,9 @@
     <div data-ref="explanation" class="request">
       <h2>Request Profile</h2>
       <p>
-        You can get a peer's profile (in this case, <span data-ref="address"></span>) by sending
-        a <code>ProfileRequest</code>. They should quickly send back a <code>ProfileResponse</code>.
+        You can get a peer's profile (in this case, <code data-ref="address"></code>) by sending
+        a <code>ProfileRequest</code>. Clients usually send back a <code>ProfileResponse</code> 
+        right away.
       </p>
 
       <div class="buttons">

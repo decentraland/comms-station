@@ -265,6 +265,12 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     this.addMessage(sender, "emote/" + emoteId)
   }
 
+  setIsland(island: Island) {
+    this.$island.innerText = island.id
+    this.$adapter.innerText = island.adapter
+    this.$nPeers.innerText = `${island.peers.length}`
+  }
+
   setPosition(position: Position, island?: string) {
     this.$xInput.value = `${position.x}`
     this.$yInput.value = `${position.y}`
@@ -288,6 +294,10 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     this.addMessage("You", `Teleporting to (${x}, ${y})`)
     this.emit({ type: 'teleport', x, y, island })
   }
+
+  private get $island() : HTMLElement { return this.$ref('island') }
+  private get $adapter(): HTMLElement { return this.$ref('adapter') }
+  private get $nPeers() : HTMLElement { return this.$ref('npeers') }
 
   private get $chatInput()  : HTMLInputElement { return this.$ref('chat-input') }
   private get $xInput()     : HTMLInputElement { return this.$ref('x-input') }

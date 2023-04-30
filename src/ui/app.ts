@@ -120,12 +120,17 @@ export class AppView extends View<AppEvent> {
     await nextView.events.next('join')
   }
 
-  showChat() {
+  showChat(island: Island) {
     const lastView = lastOf(this.chatRooms)
     lastView?.disable()
 
     const nextView = new ChatRoomView()
     this.chatRooms.push(nextView)
+
+    nextView.setIsland(island)
+    for (let peer of island.peers) {
+      nextView.addMessage(peer, "was already here")
+    }
     
     nextView.events.on('send', ({ text }) => 
       this.emit({ type: 'send-chat', text })
@@ -187,7 +192,7 @@ export class AppView extends View<AppEvent> {
           chatRoom.addEmote(sender, content.split(' ')[0].slice(1))
 
         } else {
-          chatRoom.addMessage(sender, content)
+          chatRoom.addMessage(sender, " : " + content)
         }
         break
 
@@ -195,12 +200,7 @@ export class AppView extends View<AppEvent> {
         chatRoom.addMovement()
         break
 
-      case 'profileRequest':
-        chatRoom.addMessage(sender, 'requests profile ' + msg.profileRequest.address)
-        break
-
       default:
-        // console.log("Received", msg)
         break
     }
   }
