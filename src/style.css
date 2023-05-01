@@ -35,7 +35,6 @@ html {
 body {
   margin: auto;
   max-width: 720px;
-  padding-bottom: 120px;
 }
 
 header {
@@ -63,7 +62,7 @@ header .to-source {
 }
 
 #app {
-  margin-bottom: 48px;
+  margin-bottom: 96px;
 }
 
 table {
