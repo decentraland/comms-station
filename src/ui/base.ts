@@ -28,6 +28,16 @@ export abstract class View<E extends AppEvent = never> {
   }
 }
 
+export abstract class StepView<E extends AppEvent> extends View<E> {
+  show() {
+    this.$root.style.display = 'block'
+    setTimeout(() => this.$root.style.opacity = '1', 1)
+    document.querySelector('#end')!.scrollIntoView({ block: 'end' }) // TODO this is a hack
+  }
+
+  disable() {}
+}
+
 export function cloneTemplate(elementId: string): HTMLElement {
   const $template = document.getElementById(elementId) as HTMLTemplateElement
   const $root = $template.content!.firstElementChild!

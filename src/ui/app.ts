@@ -5,7 +5,6 @@ import { lastOf } from "../util"
 import { View, cloneTemplate } from "./base"
 import {
   AwaitIslandView,
-  ChatRoomView,
   CreateIdentityView,
   DiscoverRealmsView,
   JoinIslandView,
@@ -17,6 +16,7 @@ import {
 } from "./steps"
 import { RequestProfileView } from "./profile"
 import { ModalView } from "./modal"
+import { ChatRoomView } from "./chat"
 
 
 export type AppEvent =
