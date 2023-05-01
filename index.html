@@ -264,9 +264,13 @@
     <div data-ref="explanation" class="request">
       <h2>Request Profile</h2>
       <p>
-        You can get a peer's profile (in this case, <code data-ref="address"></code>) by sending
-        a <code>ProfileRequest</code>. Clients usually send back a <code>ProfileResponse</code> 
+        You can ask for a peer's profile (in this case, <code data-ref="address"></code>) by sending
+        a <code>ProfileRequest</code>. Recently active clients usually send back a <code>ProfileResponse</code> 
         right away.
+      </p>
+      <p>
+        Inactive clients may not respond, and some clients (such as this one) choose to ignore these 
+        requests.
       </p>
 
       <div class="buttons">
