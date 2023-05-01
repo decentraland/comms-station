@@ -22,6 +22,7 @@
     <header>
       <img src="/logo.svg">
       <h1>Decentraland | <small>Comms Demo Station</small></h1>
+      <a class="to-source" href="#!!">↗ source</a>
     </header>
   </div>
 </template>
@@ -36,14 +37,15 @@
 
         It can discover <strong>realms</strong>, connect to their <strong>RPC</strong> interface,
         use <strong>Archipelago</strong> to get an <strong>island</strong> assignment and join
-        the island to <strong>chat</strong> with nearby players.
+        the island to <strong>chat</strong> with nearby players and inspect their <strong>profiles</strong>.
       </p>
       <p>
         If you're familiar with these concepts, go ahead and start the station. If not, the
-        <a>comms documentation overview</a> is a better place to begin.
+        <a href="https://docs.decentraland.org/contributor/content/overview/">comms documentation overview</a>
+        is a better place to begin.
       </p>
       <p>
-        You can follow along with the station's <a>source code</a>, which closely mirrors what
+        You can also follow along with the station's <a href="#!!">source code</a>, which closely mirrors what
         you'll see on-screen.
       </p>
 
@@ -81,7 +83,8 @@
       </p>
       <p>
         These servers know about each other. We can connect to the Foundation's main realm and
-        get a list of all alternatives using the <a>lambdas/explore/realms</a> endpoint.
+        get a list of all alternatives using the <a href="https://peer.decentraland.org/lambdas/explore/realms">lambdas/explore/realms</a> 
+        endpoint.
       </p>
       <div class="buttons">
         <button class="submit" data-ref="discover">Discover Realms</button>
@@ -98,7 +101,6 @@
         We've found a number of realms, each hosted in a different server. Let's connect to one
         with a healthy number of currently online players.
       </p>
-
       <table class="realms" data-ref="realms">
         <tr>
           <th>Name</th>
@@ -125,7 +127,8 @@
     <h2>Start Authentication</h2>
     <div class="content">
       <p>
-        Before we can access any services, we must prove our identity by completing a <a>challenge</a>.
+        Before we can access any services, we must prove our identity by completing a 
+        <a href="http://docs.decentraland.org/contributor/comms/overview/#authentication">challenge</a>.
         The server will send us a randomly generated string, and we will sign it with our private
         key.
       </p>
@@ -142,8 +145,8 @@
     <div class="content">
       <p>
         We were sent the random string <code data-ref="challenge"></code>. We'll use our
-        private key to produce a valid <a>authentication chain</a>, ending with a signature for
-        this string.
+        private key to produce a valid <a href="https://docs.decentraland.org/contributor/auth/authchain/">authentication chain</a>, 
+        ending with a signature for this string.
       </p>
       <p>
         The realm server will validate the chain in our response and verify all signatures before
@@ -162,12 +165,14 @@
     <div class="content">
       <p>
         We are now connected to a realm and have successfully authenticated. The next step is
-        getting our first island assignment from Archipelago. For this, we have to send our
-        position in the world map.
+        getting our first <a href="http://docs.decentraland.org/contributor/comms/overview/#islands">island assignment</a> 
+        from <a href="http://docs.decentraland.org/contributor/comms/archipelago/">Archipelago</a>. 
+        For this, we have to send (and keep sending) our position in the world map.
       </p>
       <p>
         We must continue to report our position about once per second, otherwise Archipelago will
-        assume we're going offline. This periodic update is called a <a>heartbeat</a>.
+        assume we're going offline. This periodic update is called a 
+        <a href="http://docs.decentraland.org/contributor/comms/archipelago/#heartbeat">heartbeat</a>.
       </p>
 
       <div class="buttons">
@@ -182,8 +187,8 @@
     <h2>Wait for Island Assignment</h2>
     <div class="content">
       <p>
-        We're now sending our periodic position updates and waiting for Archipelago to assign us
-        to an island, where we'll be able to exchange messages with nearby players.
+        We're now sending our periodic position updates and waiting for <a href="http://docs.decentraland.org/contributor/comms/archipelago/">Archipelago</a> 
+        to assign us to an island, where we'll be able to exchange messages with nearby players.
       </p>
       <p>Let's wait...</p>
     </div>
@@ -284,7 +289,7 @@
 
 <template id="template-identity-created">
   <div class="identity-created step box">
-    You created
+    You created a new identity. Your address is <code data-ref="address"></code>
   </div>
 </template>
 
