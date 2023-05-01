@@ -77,12 +77,15 @@ async function start() {
   // Start listening for island assignments from Archipelago, switch adapters as we receive them:
   await archipelagoClient.addIslandChangedListener(identity, async (island) => {
     // TODO: only LiveKit is supported right now
-
+    
+    app.events.offAll() // TODO be specific, this is a footgun
+    
     // Disconnect the previous adapter, if we had one:
     if (adapter) {
       adapter.events.offAll()
       adapter.disconnect()
     }
+
     // Show information about the island and wait for the user to click JOIN:
     await app.askJoinIsland(island)
 
