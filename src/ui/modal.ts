@@ -14,13 +14,8 @@ export class ModalView<T extends View<any>> extends View<ModalEvents> {
     this.$content.appendChild(content.$root)
   }
 
-  show() {
-    this.$root.style.display = 'block'
-  }
-
   private onBackdropClick = () => {
     this.emit({ type: 'close' })
-    this.$root.style.display = 'none'
   }
 
   private get $backdrop(): HTMLElement { return this.$ref('backdrop') }

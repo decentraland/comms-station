@@ -14,27 +14,23 @@ export class RequestProfileView extends View<RequestProfileEvents> {
   }
 
   setAddress(address: string) {
-    if (address != this.$address.innerText) {
-      this.$address.innerText = address
-      this.$send.classList.remove('disabled')
-    }
+    this.$address.innerText = address
+    this.$send.classList.remove('disabled')
+    this.$send.innerText = "Request Profile"
   }
 
-  setProfile(profile?: any) {
-    if (profile && profile.userId === this.$address.innerText) {
-      this.$profile.innerText = JSON.stringify(profile, null, 2)
-      this.$send.style.display = 'none'
-      this.$profile.style.display = 'block'
+  setProfile(profile: any) {
+    if (profile.userId !== this.$address.innerText) return
 
-    } else {
-      this.$send.style.display = 'block'
-      this.$profile.style.display = 'none'
-    }
+    this.$profile.innerText = JSON.stringify(profile, null, 2)
+    this.$send.style.display = 'none'
+    this.$profile.style.display = 'block'
   }
 
   private onSendClick = () => {
     this.emit({ type: 'request', address: this.$address.innerText })
     this.$send.classList.add('disabled')
+    this.$send.innerText = "Waiting..."
   }
 
   private get $send(): HTMLElement { return this.$ref('send') }

@@ -29,6 +29,7 @@ export class AppView extends View<AppEvent> {
   $root = cloneTemplate('template-app')
 
   private lastPosition?: Position
+  private requestProfile?: RequestProfileView // non-null when modal is open
 
   constructor(
     private welcome = new WelcomeView(),
@@ -40,14 +41,11 @@ export class AppView extends View<AppEvent> {
     private startHeartbeat = new StartHeartbeatView(),
     private awaitIsland = new AwaitIslandView(),
     private joinIslands = new Array<JoinIslandView>(),
-    private chatRooms = new Array<ChatRoomView>(),
-    private requestProfileModal = new ModalView(new RequestProfileView())) {
+    private chatRooms = new Array<ChatRoomView>()) {
     super()
   }
 
   async askStart() {
-    this.$root.appendChild(this.requestProfileModal.$root)
-    
     this.$root.appendChild(this.welcome.$root)
     this.welcome.show()
 
@@ -158,20 +156,24 @@ export class AppView extends View<AppEvent> {
   }
   
   setRequestedProfile(profile: any) {
-    this.requestProfileModal.content.setProfile(profile)
+    this.requestProfile?.setProfile(profile)
   }
 
   private showRequestProfile(address: string) {
-    const requestProfile = this.requestProfileModal.content
+    this.requestProfile = new RequestProfileView()
+    const modal = new ModalView(this.requestProfile)
     
-    requestProfile.setAddress(address)
-    requestProfile.setProfile(null)
+    this.requestProfile.setAddress(address)
     
-    requestProfile.events.on('request', ev => {
+    this.requestProfile.events.on('request', ev => {
       this.emit({ type: 'request-profile', address })
     })
 
-    this.requestProfileModal.show()
+    modal.events.on('close', ev => {
+      modal.$root.remove()
+    })
+
+    this.$root.prepend(modal.$root)
   }
 
   handleMessage(sender: string, msg: AdapterMessage) {

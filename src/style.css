@@ -199,8 +199,6 @@ button.disabled, button:hover.disabled {
   top: 0; right: 0; bottom: 0; left: 0;
   z-index: 10;
   padding: 24px;
-
-  display: none;
 }
 
 .modal .container {
@@ -226,12 +224,13 @@ button.disabled, button:hover.disabled {
 
 .request-profile {
   width: 50em;
-  max-height: 30em;
-  overflow: scroll;
 }
 
 .request-profile pre {
+  display: none;
+  margin: 0;
   padding: 12px;
+  max-height: 25em;
   background-color: var(--page-bg);
-  overflow-x: scroll;
+  overflow: scroll;
 }
