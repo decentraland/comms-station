@@ -48,6 +48,19 @@ export class CreateIdentityView extends StepView<CreateIdentityEvent> {
 
 // -------------------------------------------------------------------------------------------------
 
+export class IdentityCreatedView extends StepView<never> {
+  $root = cloneTemplate('template-identity-created')
+
+  setAddress(address: string) {
+    this.$address.innerText = address
+  }
+
+  private get $address(): HTMLElement { return this.$ref('address') }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+
 export type DiscoverRealmsEvent = 
   | { type: 'discover' }
 

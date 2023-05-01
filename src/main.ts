@@ -38,6 +38,8 @@ async function start() {
   const identity = await createDisposableIdentity()
   const address = identity.ephemeralIdentity.address
 
+  app.setCreatedAddress(address)
+
   // Show an explanation of how realms work and wait for the user to click DISCOVER:
   await app.askDiscoverRealms()
 
@@ -77,7 +79,7 @@ async function start() {
   // Start listening for island assignments from Archipelago, switch adapters as we receive them:
   await archipelagoClient.addIslandChangedListener(identity, async (island) => {
     // TODO: only LiveKit is supported right now
-    
+
     app.events.offAll() // TODO be specific, this is a footgun
     
     // Disconnect the previous adapter, if we had one:

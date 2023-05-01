@@ -45,6 +45,8 @@ export class LivekitAdapter extends Adapter {
       .on(RoomEvent.DataReceived, (payload: Uint8Array, p?: Participant, _?: DataPacket_Kind) => {
         const { message } = Packet.decode(payload)
         if (! message) return
+
+        if (message.$case !== 'position') console.log(message)
         
         this.emitter.emit({ type: 'message', address: p?.identity ?? "(unknown)", message })
       })
@@ -59,6 +61,7 @@ export class LivekitAdapter extends Adapter {
 
   async send(message: AdapterMessage): Promise<void> {
     const data = Packet.encode({message}).finish()
+    console.log('send', message)
     
     await this.room!.localParticipant.publishData(data, DataPacket_Kind.RELIABLE)
   }

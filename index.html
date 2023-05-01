@@ -184,13 +184,12 @@
 
 <template id="template-await-island">
   <div id="await-island" class="step box">
-    <h2>Wait for Island Assignment</h2>
     <div class="content">
       <p>
         We're now sending our periodic position updates and waiting for <a target="_blank" href="http://docs.decentraland.org/contributor/comms/archipelago/">Archipelago</a> 
-        to assign us to an island, where we'll be able to exchange messages with nearby players.
+        to assign us to an island. Let's wait...
       </p>
-      <p>Let's wait...</p>
+      <p></p>
     </div>
   </div>
 </template>
@@ -201,10 +200,7 @@
     <div class="content">
       <p>
         We've been assigned to island <code data-ref="island"></code>, which uses the
-        <code data-ref="adapter"></code> adapter.
-      </p>
-      <p>
-        Our island is accepting websocket connections at <code data-ref="uri"></code>.
+        <code data-ref="adapter"></code> adapter. Our island is accepting websocket connections at <code data-ref="uri"></code>.
       </p>
 
       <div class="buttons">
@@ -289,7 +285,9 @@
 
 <template id="template-identity-created">
   <div class="identity-created step box">
-    You created a new identity. Your address is <code data-ref="address"></code>
+    <div class="content">
+      You created a new identity: <code data-ref="address"></code>.
+    </div>
   </div>
 </template>
 

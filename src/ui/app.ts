@@ -7,6 +7,7 @@ import {
   AwaitIslandView,
   CreateIdentityView,
   DiscoverRealmsView,
+  IdentityCreatedView,
   JoinIslandView,
   RequestChallengeView,
   RespondChallengeView,
@@ -28,7 +29,6 @@ export type AppEvent =
 export class AppView extends View<AppEvent> {
   $root = cloneTemplate('template-app')
 
-  private lastPosition?: Position
   private requestProfile?: RequestProfileView // non-null when modal is open
 
   constructor(
@@ -146,13 +146,16 @@ export class AppView extends View<AppEvent> {
     nextView.show()
   }
 
+  setCreatedAddress(address: string) {
+    const identityCreated = new IdentityCreatedView()
+    identityCreated.setAddress(address)
+
+    this.$root.appendChild(identityCreated.$root)
+    identityCreated.show()
+  }
+
   setPosition(position: Position) {
-    const lastPosition = this.lastPosition
-    
-    if (!lastPosition || lastPosition.x != position.x || lastPosition.y != position.y) {
-      this.lastPosition = position
-      lastOf(this.chatRooms)?.setPosition(position)
-    }
+    lastOf(this.chatRooms)?.setPosition(position)
   }
   
   setRequestedProfile(profile: any) {

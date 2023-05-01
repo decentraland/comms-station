@@ -18,10 +18,18 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     nMovements: 0,
   }
 
+  private lastPosition?: Position
+
   constructor() {
     super()
     this.$send.addEventListener('click', this.onSendClick)
     this.$teleport.addEventListener('click', this.onTeleportClick)
+
+    this.$chatInput.addEventListener('keypress', ev => {
+      if (ev.key === 'Enter') {
+        this.$send.click()
+      }
+    })
   }
 
   addPing() {
@@ -53,7 +61,7 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
   }
 
   addEmote(sender: string, emoteId: string) {
-    this.addMessage(sender, "emote/" + emoteId)
+    this.addMessage(sender, `* emote/${emoteId} *`)
   }
 
   setIsland(island: Island) {
@@ -63,9 +71,16 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
   }
 
   setPosition(position: Position, island?: string) {
-    this.$xInput.value = `${position.x}`
-    this.$yInput.value = `${position.y}`
-    if (island) this.$islandInput.value = island
+    const lastPosition = this.lastPosition
+
+    // Set the position in the UI (and avoid overwriting edits):
+    if (!lastPosition || lastPosition.x != position.x || lastPosition.y != position.y) {
+      this.$xInput.value = `${position.x}`
+      this.$yInput.value = `${position.y}`
+      if (island) this.$islandInput.value = island
+
+      this.lastPosition = position
+    }
   }
 
   private onSendClick = () => {
@@ -75,6 +90,7 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     this.emit({ type: 'send', text })
 
     this.$chatInput.value = ""
+    this.scrollLogToBottom()
   }
 
   private onTeleportClick = () => {
@@ -82,8 +98,16 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     const y = parseInt(this.$yInput.value)
     const island = this.$islandInput.value
 
-    this.addMessage("You", `Teleporting to (${x}, ${y})`)
+    this.addMessage("You", `* Teleporting to (${x}, ${y}) *`)
     this.emit({ type: 'teleport', x, y, island })
+
+    this.scrollLogToBottom()
+  }
+
+  private scrollLogToBottom() {
+    if (this.$log.lastChild instanceof HTMLElement) {
+      this.$log.lastChild.scrollIntoView()
+    }
   }
 
   private get $island() : HTMLElement { return this.$ref('island') }
