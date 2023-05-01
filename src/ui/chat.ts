@@ -41,7 +41,12 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
 
     chatMessage.setSender(sender)
     chatMessage.setText(text)
-    chatMessage.events.on('click-sender', () => this.emit({ type: 'request-profile', address: sender }))
+    
+    if (sender.startsWith('0x')) {
+      chatMessage.events.on('click-sender', () => {
+        this.emit({ type: 'request-profile', address: sender })
+      })
+    }
 
     this.$log.appendChild(chatMessage.$root)
     this.$log.scrollTo(0, chatMessage.$root.scrollHeight)
