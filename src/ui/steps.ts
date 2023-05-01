@@ -26,12 +26,15 @@ export class WelcomeView extends StepView<WelcomeEvent> {
   
   constructor() {
     super()
-    this.$ref('start').addEventListener('click', this.onStartClick)
+    this.$start.addEventListener('click', this.onStartClick)
   }
 
   private onStartClick = () => {
     this.emit({ type: 'start' })
+    this.$start.classList.add('disabled')
   }
+
+  private get $start(): HTMLElement { return this.$ref('start') }
 }
 
 
@@ -46,12 +49,15 @@ export class CreateIdentityView extends StepView<CreateIdentityEvent> {
 
   constructor() {
     super()
-    this.$ref('create').addEventListener('click', this.onCreateClick)
+    this.$create.addEventListener('click', this.onCreateClick)
   }
 
   private onCreateClick = () => {
     this.emit({ type: 'create' })
+    this.$create.classList.add('disabled')
   }
+
+  private get $create(): HTMLElement { return this.$ref('create') }
 }
 
 
@@ -66,12 +72,15 @@ export class DiscoverRealmsView extends StepView<DiscoverRealmsEvent> {
 
   constructor() {
     super()
-    this.$ref('discover').addEventListener('click', this.onDiscoverClick)
+    this.$discover.addEventListener('click', this.onDiscoverClick)
   }
 
   private onDiscoverClick = () => {
     this.emit({ type: 'discover' })
+    this.$discover.classList.add('disabled')
   }
+
+  private get $discover(): HTMLElement { return this.$ref('discover') }
 }
 
 
@@ -92,12 +101,13 @@ export class SelectRealmView extends StepView<SelectRealmEvent> {
     for (let realm of sortedRealms) {
       const row = new SelectRealmRowView()
       
-      row.$name.innerHTML = realm.serverName
-      row.$url.innerHTML = realm.url
-      row.$users.innerHTML = `${realm.usersCount}`
+      row.$name.innerText = realm.serverName
+      row.$url.innerText = realm.url
+      row.$users.innerText = `${realm.usersCount}`
 
       row.$connect.addEventListener('click', _ => {
         this.emit({ type: 'select', realm })
+        this.queryAll('button').forEach($btn => $btn.classList.add('disabled'))
       })
 
       this.$ref('realms').appendChild(row.$root)
@@ -126,12 +136,15 @@ export class RequestChallengeView extends StepView<RequestChallengeEvent> {
 
   constructor() {
     super()
-    this.$ref('request').addEventListener('click', this.onRequestClick)
+    this.$request.addEventListener('click', this.onRequestClick)
   }
 
   private onRequestClick = () => {
     this.emit({ type: 'request' })
+    this.$request.classList.add('disabled')
   }
+
+  private get $request(): HTMLElement { return this.$ref('request') }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -146,16 +159,20 @@ export class RespondChallengeView extends StepView<RespondChallengeEvent> {
 
   constructor() {
     super()
-    this.$ref('respond').addEventListener('click', this.onRequestClick)
+    this.$respond.addEventListener('click', this.onRequestClick)
   }
 
   setChallenge(challenge: string) {
-    this.$ref('challenge').innerHTML = challenge
+    this.$challenge.innerText = challenge
   }
 
   private onRequestClick = () => {
     this.emit({ type: 'respond' })
+    this.$respond.classList.add('disabled')
   }
+
+  private get $respond(): HTMLElement { return this.$ref('respond') }
+  private get $challenge(): HTMLElement { return this.$ref('challenge') }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -168,12 +185,15 @@ export class StartHeartbeatView extends StepView<StartHeartbeatEvent> {
   $root = cloneTemplate('template-start-heartbeat')
   constructor() {
     super()
-    this.$ref('start').addEventListener('click', this.onStartClick)
+    this.$start.addEventListener('click', this.onStartClick)
   }
 
   private onStartClick = () => {
     this.emit({ type: 'start' })
+    this.$start.classList.add('disabled')
   }
+
+  private get $start(): HTMLElement { return this.$ref('start') }
 }
 
 
@@ -195,13 +215,13 @@ export class JoinIslandView extends StepView<JoinIslandEvent> {
   
   constructor() {
     super()
-    this.$ref('join').addEventListener('click', this.onJoinClick)
+    this.$join.addEventListener('click', this.onJoinClick)
   }
 
   setIsland(island: Island) {
-    this.$ref('island').innerHTML = island.id
-    this.$ref('adapter').innerHTML = island.adapter
-    this.$ref('uri').innerHTML = this.formatUri(island.uri)
+    this.$island.innerText = island.id
+    this.$adapter.innerText = island.adapter
+    this.$uri.innerText = this.formatUri(island.uri)
   }
 
   private formatUri(uri: string) {
@@ -212,6 +232,11 @@ export class JoinIslandView extends StepView<JoinIslandEvent> {
   private onJoinClick = () => {
     this.emit({ type: 'join' })
   }
+
+  private get $uri() : HTMLElement { return this.$ref('uri') }
+  private get $island() : HTMLElement { return this.$ref('island') }
+  private get $adapter(): HTMLElement { return this.$ref('adapter') }
+  private get $join(): HTMLElement { return this.$ref('join') }
 }
 
 
@@ -239,15 +264,15 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
   }
 
   addPing() {
-    this.$nPings.innerHTML = `${++this.stats.nPings}`
+    this.$nPings.innerText = `${++this.stats.nPings}`
   }
 
   addPong() {
-    this.$nPongs.innerHTML = `${++this.stats.nPongs}`
+    this.$nPongs.innerText = `${++this.stats.nPongs}`
   }
 
   addMovement() {
-    this.$nMovements.innerHTML = `${++this.stats.nMovements}`
+    this.$nMovements.innerText = `${++this.stats.nMovements}`
   }
 
   addMessage(sender: string, text: string) {

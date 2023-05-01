@@ -14,7 +14,10 @@ export class RequestProfileView extends View<RequestProfileEvents> {
   }
 
   setAddress(address: string) {
-    this.$address.innerText = address
+    if (address != this.$address.innerText) {
+      this.$address.innerText = address
+      this.$send.classList.remove('disabled')
+    }
   }
 
   setProfile(profile?: any) {
@@ -31,10 +34,10 @@ export class RequestProfileView extends View<RequestProfileEvents> {
 
   private onSendClick = () => {
     this.emit({ type: 'request', address: this.$address.innerText })
+    this.$send.classList.add('disabled')
   }
 
   private get $send(): HTMLElement { return this.$ref('send') }
-  private get $explanation(): HTMLElement { return this.$ref('explanation') }
   private get $address(): HTMLElement { return this.$ref('address') }
   private get $profile(): HTMLElement { return this.$ref('profile') }
 }
