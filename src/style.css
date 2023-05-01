@@ -14,7 +14,7 @@
   --box-fg: var(--black);
 
   --button-bg: var(--red);
-  --button-bg-hover: var(--red-bright);
+  --button-bg-hover: var(--red-dark);
   --button-bg-disabled: var(--red-bright);
   --button-fg: var(--white);
 
@@ -52,6 +52,13 @@ header img {
 header h1, header p {
   margin: 0;
   font-weight: normal;
+  vertical-align: baseline;
+}
+
+header .to-source {
+  display: inline-block;
+  flex: 1 1 0;
+  text-align: right;
   vertical-align: baseline;
 }
 
@@ -173,12 +180,18 @@ button.disabled, button:hover.disabled {
   transition: opacity ease-out 0.25s;
 }
 
-.chat-log {
+.chat-room .chat-log {
   height: 12em;
   padding: 8px 4px;
   overflow-y: scroll;
   border: 1px solid var(--white-dark);
   border-radius: var(--border-radius);
+}
+
+.chat-room .stats {
+  margin-top: 12px;
+  margin-right: 2px;
+  text-align: right;
 }
 
 .modal {
