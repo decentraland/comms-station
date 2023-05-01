@@ -1,6 +1,7 @@
 :root {
   --red: #ff2d55;
-  --red-bright: #ff3d61;
+  --red-bright: #ff627f;
+  --red-dark: #bf233f;
   --white: #ffffff;
   --white-dark: #f3f2f5;
   --black: #000000;
@@ -14,19 +15,11 @@
 
   --button-bg: var(--red);
   --button-bg-hover: var(--red-bright);
+  --button-bg-disabled: var(--red-bright);
   --button-fg: var(--white);
 
   --link-fg: #EE834A;
 
-  /* --secondary: #f3f2f5;
-  --secondary-hover: #ecebed;
-  --secondary-on-modal: #f3f2f5;
-  --secondary-on-modal-hover: #ecebed;
-  --card-on-modal: #fff;
-  --text: #16141a;
-  --secondary-text: #676370;
-  --text-on-secondary: #16141a;
-   */
   --border-radius: 4px;
 }
 
@@ -81,7 +74,11 @@ h2 {
 }
 
 a {
+  cursor: pointer;
   color: var(--link-fg);
+}
+
+a:hover {
   text-decoration: underline;
 }
 
@@ -134,6 +131,12 @@ button {
 
 button:hover {
   background-color: var(--button-bg-hover);
+}
+
+button.disabled, button:hover.disabled {
+  background-color: var(--button-bg-disabled);
+  color: var(--button-fg);
+  pointer-events: none;
 }
 
 .box label {
@@ -217,4 +220,5 @@ button:hover {
 .request-profile pre {
   padding: 12px;
   background-color: var(--page-bg);
+  overflow-x: scroll;
 }
