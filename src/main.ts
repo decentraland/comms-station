@@ -24,7 +24,7 @@ import { Position } from '@dcl/protocol/out-ts/decentraland/common/vectors.gen'
 // some background code and then awaiting a promise from the UI to continue.
 async function start() {
   const app = new AppView()
-  document.getElementById('app')!.appendChild(app.$root)
+  document.getElementById('container')!.appendChild(app.$root)
 
   // Show the welcome box and wait for the user to click START.
   await app.askStart()
