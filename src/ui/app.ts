@@ -168,11 +168,11 @@ export class AppView extends View<AppEvent> {
     
     this.requestProfile.setAddress(address)
     
-    this.requestProfile.events.on('request', ev => {
+    this.requestProfile.events.on('request', _ => {
       this.emit({ type: 'request-profile', address })
     })
 
-    modal.events.on('close', ev => {
+    modal.events.on('close', _ => {
       modal.$root.remove()
     })
 
