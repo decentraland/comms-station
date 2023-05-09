@@ -1,6 +1,6 @@
 import './style.css'
 
-import { createDisposableIdentity } from './util/identity'
+import { createDisposableIdentity } from './util'
 import { findRealms, ArchipelagoClient } from './services/archipelago'
 import { Authenticator } from '@dcl/crypto'
 import { LivekitAdapter } from './adapters/livekit'
