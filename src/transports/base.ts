@@ -3,10 +3,10 @@ import { Emitter } from "../util/emitter"
 export type TransportMessage = { $case: string }
 
 export type TransportEvent<Incoming extends TransportMessage> =
-  | { type: 'connected', peer?: string }
-  | { type: 'message', peer?: string, message: Incoming }
-  | { type: 'disconnected', peer?: string, reason?: string }
-  | { type: 'error', error?: Error }
+  | { type: 'connected', peer?: string }                     // we or a peer just connected
+  | { type: 'message', peer?: string, message: Incoming }    // the server or a peer sent a message
+  | { type: 'disconnected', peer?: string, reason?: string } // we or a peer just disconnected
+  | { type: 'error', error?: Error }                         // an error occured (sorry)
 
 
 type MessageEvent<M extends TransportMessage, T extends M['$case']> = { 
