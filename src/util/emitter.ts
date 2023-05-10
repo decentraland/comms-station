@@ -1,61 +1,96 @@
+import { ManagedPromise } from "./mpromise"
+
 // AppEvent is simply an object with a type, meant to be extended.
 export type AppEvent = {
   type: string
 }
 
-// AppEventOfType can narrow type information of AppEvents to allow the compiler to verify it.
-export type AppEventOfType<T extends AppEvent, K> = Extract<T, {type: K}>
+// SubType can narrow type information of AppEvents to allow the compiler to verify it.
+export type SubType<E extends AppEvent, T> = Extract<E, {type: T}>
+
 
 // Receiver is a function that takes an event of some type.
-export type Receiver<T extends AppEvent> = (event: T) => unknown
+export type Receiver<E extends AppEvent> = (event: E) => unknown
+
 
 // Emitter is a utility type for eventful objects, to easily provide on/off listeners.
-export class Emitter<T extends AppEvent> {
-  private receivers = new Map<T['type'], Set<Receiver<T>>>
+export class Emitter<E extends AppEvent> {
+  private receivers = new Map<E['type'] | '*', Set<Receiver<E>>>()
 
-  on<K extends T['type'], EoT extends AppEventOfType<T, K>>(type: K, receiver: (ev: EoT) => unknown) {
-    const typedReceiver = receiver as unknown as Receiver<T>
-
-    if (this.receivers.has(type)) {
-      this.receivers.get(type)!.add(typedReceiver)
-
-    } else {
-      this.receivers.set(type, new Set([ typedReceiver ]))
-    }
-    
+  // Start calling a receiver with events of a given type.
+  on<T extends E['type']>(type: T, receiver: Receiver<SubType<E, T>>) {
+    this.getOrCreateSet(type).add(receiver as any)
     return this
   }
 
-  off<K extends T['type'], EoT extends AppEventOfType<T, K>>(type: K, receiver: (ev: EoT) => unknown) {
-    if (! this.receivers.has(type)) return // nothing to do
-    const typedReceiver = receiver as unknown as Receiver<T>
-
-    this.receivers.get(type)!.delete(typedReceiver)
-    
+  // Stop calling a receiver with events of a given type.
+  off<T extends E['type']>(type: T, receiver: Receiver<SubType<E, T>>) {
+    this.getOrCreateSet(type).delete(receiver as any)
     return this
   }
 
+  // Stop calling all receivers.
   offAll() {
     this.receivers.clear()
     return this
   }
 
-  async next<K extends T['type'], EoT extends AppEventOfType<T, K>>(type: K): Promise<EoT> {
-    return new Promise(resolve => {
-      const receiver = (ev: EoT) => {
-        resolve(ev)
-        this.off(type, receiver)
-      }
-
-      this.on(type, receiver)
-    })
+  // Return a Promise for the next event of a given type.
+  async next<T extends E['type']>(type: T): Promise<SubType<E, T>> {
+    return (await this.stream(type).next()).value // will never be `done`
   }
 
-  emit(event: T) {
-    if (! this.receivers.has(event.type)) return // nobody will receive this
-
-    for (let receiver of this.receivers.get(event.type)!) {
-      receiver(event)
+  // Return an AsyncGenerator to stream events of a given type.
+  async* stream<T extends E['type']>(type: T): AsyncGenerator<SubType<E, T>> {
+    for await (let ev of this.streamAny()) {
+      if (ev.type == type) yield ev as SubType<E, T>
     }
+  }
+
+  // Start calling a receiver on events of any type.
+  onAny(receiver: Receiver<E>) {
+    this.getOrCreateSet('*').add(receiver)
+    return this
+  }
+
+  // Stop calling a receiver on events of any type (still call if receiver was bound to specific types).
+  offAny(receiver: Receiver<E>) {
+    this.getOrCreateSet('*').delete(receiver)
+    return this
+  }
+
+  // Return a Promise for the next event of any type.
+  async nextAny() {
+    return (await this.streamAny().next()).value // will never be `done`
+  }
+
+  // Return an AsyncGenerator to stream events of any type.
+  async* streamAny(): AsyncGenerator<E> {
+    let promise = new ManagedPromise<E>()
+
+    this.onAny(ev => {
+      promise.resolve(ev)
+      promise = new ManagedPromise<E>()
+    })
+
+    while (true) {
+      yield promise
+    }
+  }
+
+  // Call all relevant receivers of an event (synchronously, in unspecified order).
+  emit(event: E) {
+    this.getOrCreateSet(event.type).forEach(receiver => receiver(event))
+    this.getOrCreateSet('*').forEach(receiver => receiver(event))
+  }
+
+  private getOrCreateSet(type: E['type']) {
+    let receiverSet = this.receivers.get(type)
+    
+    if (! receiverSet) {
+      this.receivers.set(type, receiverSet = new Set())
+    }
+
+    return receiverSet
   }
 }
