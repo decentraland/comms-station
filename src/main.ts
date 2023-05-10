@@ -1,13 +1,12 @@
 import './style.css'
 
-import { createDisposableIdentity } from './util'
-import { findRealms, ArchipelagoClient } from './services/archipelago'
 import { Authenticator } from '@dcl/crypto'
-import { LivekitAdapter } from './adapters/livekit'
-import { Adapter, AdapterEvent } from './adapters/base'
-import { setAsyncInterval as setAwaitedInterval } from './util'
-import { AppView } from './ui/app'
 import { Position } from '@dcl/protocol/out-ts/decentraland/common/vectors.gen'
+import { ArchipelagoClient } from './services/archipelago'
+import { CommsTransport, LiveKitCommsTransport } from './services/comms'
+import { findRealms } from './services/realms'
+import { AppView } from './ui/app'
+import { createDisposableIdentity, setAsyncInterval as setAwaitedInterval } from './util'
 
 // Welcome!
 //
@@ -51,7 +50,7 @@ async function start() {
   
   // Initialize the Archipelago client and connect to the realm's RPC interface:
   const archipelagoClient = new ArchipelagoClient(realm)
-  await archipelagoClient.connect(realm.url)
+  await archipelagoClient.connect()
 
   // Show an explanation of how auth starts, and wait for the user to click REQUEST CHALLENGE:
   await app.askRequestChallenge()
@@ -72,41 +71,41 @@ async function start() {
   // Show a box while we add our listeners and wait for an island assignment, explaining the delay:
   app.showWaitingForIsland()
 
-  let adapter!: Adapter
+  let transport!: CommsTransport
   let wantedPosition: Position = {x: 1, y: 0, z: 0} // an initial position, user can TELEPORT later
   let wantedIsland: string | undefined // the island assignment we'll specifically request, if any
 
   // Start listening for island assignments from Archipelago, switch adapters as we receive them:
-  await archipelagoClient.addIslandChangedListener(identity, async (island) => {
-    // TODO: only LiveKit is supported right now
+  await archipelagoClient.on('island_changed', async (ev) => {
+    const { island } = ev // TODO: only LiveKit is supported right now
 
     app.events.offAll() // TODO be specific, this is a footgun
     
     // Disconnect the previous adapter, if we had one:
-    if (adapter) {
-      adapter.events.offAll()
-      adapter.disconnect()
+    if (transport) {
+      transport.offAll()
+      transport.disconnect()
     }
 
     // Show information about the island and wait for the user to click JOIN:
     await app.askJoinIsland(island)
 
     // Create the new adapter (it won't connect automatically):
-    adapter = new LivekitAdapter(island.uri)
+    transport = new LiveKitCommsTransport(island.uri)
 
     // Attach listeners for all relevant events:
-    adapter.events
-      .on('message', ev => { app.handleMessage(ev.address, ev.message) })
-      .on('peer-disconnected', console.log)
-      .on('peer-connected', console.log)
+    transport
+      .on('message', ev => { app.handleMessage(ev.peer ?? "", ev.message) })
       .on('disconnected', console.log)
+      .on('connected', console.log)
 
     // Connect the adapter:
-    await adapter.connect()
+    await transport.connect()
 
     // Listen for chat messages coming from the UI, and send then through the adapter:
     app.events.on('send-chat', ev => {
-      adapter.sendChat({ message: ev.text, timestamp: Date.now() })
+      transport.send({ $case: 'chat', chat: {message: ev.text, timestamp: Date.now()} })
+      // transport.sendChat({ message: ev.text, timestamp: Date.now() })
     })
 
     // Listen for teleport requests coming from the UI, and update our heartbeat report:
@@ -116,17 +115,15 @@ async function start() {
     })
 
     // Listen for address inspection requests coming from the UI, and request profiles:
-    app.events.on('request-profile', ({ address }) => {
-      adapter.sendProfileRequest({ address: address, profileVersion: 0 }) // TODO explain 0
+    app.events.on('request-profile', async ({ address }) => {
+      transport.send({ $case: 'profileRequest', profileRequest: {address, profileVersion: 0} }) // TODO explain 0
 
-      const onMessage = (ev: AdapterEvent) => {
-        if (ev.type == 'message' && ev.address == address && ev.message.$case == 'profileResponse') {
-          adapter.events.off('message', onMessage)
+      for await (let ev of transport.streamCase('profileResponse')) {
+        if (ev.peer === address) {
           app.setRequestedProfile(JSON.parse(ev.message.profileResponse.serializedProfile))
+          break
         }
       }
-
-      adapter.events.on('message', onMessage)
     })
 
     // Show the chat box, and update the current position in the UI:
