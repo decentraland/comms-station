@@ -1,5 +1,6 @@
 import { Transport, TransportMessage } from "./base"
 
+
 export abstract class WebSocketTransport<
   Incoming extends TransportMessage, 
   Outgoing extends TransportMessage, 

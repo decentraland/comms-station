@@ -1,9 +1,10 @@
 import { Room, RoomEvent, DataPacket_Kind, DisconnectReason, RemoteParticipant, Participant } from "livekit-client"
 import { TransportMessage, Transport } from "./base"
 
+
 export abstract class LiveKitTransport<
-Incoming extends TransportMessage, 
-Outgoing extends TransportMessage, 
+  Incoming extends TransportMessage, 
+  Outgoing extends TransportMessage, 
 > extends Transport<Incoming, Outgoing> {
   
   protected readonly uri: string
