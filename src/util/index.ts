@@ -1,6 +1,5 @@
 export * from './emitter'
 export * from './identity'
-export * from '../transports/base'
 export * from './mpromise'
 
 // lastOf returns the last element of an array, or null if empty.

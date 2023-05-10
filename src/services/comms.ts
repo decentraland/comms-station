@@ -1,6 +1,6 @@
 import * as comms from '@dcl/protocol/out-ts/decentraland/kernel/comms/rfc4/comms.gen'
 import { LiveKitTransport } from '../transports/livekit'
-import { Transport, TransportEvent } from '../util'
+import { Transport, TransportEvent } from '../transports'
 
 
 // IncomingMessage and OutgoingMessage are the comms messages defined in the protocol layer.

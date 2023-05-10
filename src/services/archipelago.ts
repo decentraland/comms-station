@@ -1,9 +1,9 @@
 import { AuthLink } from "@dcl/crypto"
 import { Position } from "@dcl/protocol/out-ts/decentraland/common/vectors.gen"
 import { ClientPacket, ServerPacket } from "@dcl/protocol/out-ts/decentraland/kernel/comms/v3/archipelago.gen"
-import { Emitter, TransportEvent } from "../util"
 import { Realm } from "./realms"
-import { WebSocketTransport } from "../transports"
+import { TransportEvent, WebSocketTransport } from "../transports"
+import { Emitter } from "../util/emitter"
 
 type Incoming = NonNullable<ServerPacket['message']>
 type Outgoing = NonNullable<ClientPacket['message']>
