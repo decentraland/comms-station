@@ -79,7 +79,7 @@ async function start() {
   await archipelagoClient.on('island_changed', async (ev) => {
     const { island } = ev // TODO: only LiveKit is supported right now
 
-    app.events.offAll() // TODO be specific, this is a footgun
+    app.offAll() // TODO be specific, this is a footgun
     
     // Disconnect the previous adapter, if we had one:
     if (transport) {
@@ -103,22 +103,22 @@ async function start() {
     await transport.connect()
 
     // Listen for chat messages coming from the UI, and send then through the adapter:
-    app.events.on('send-chat', ev => {
+    app.on('send-chat', ev => {
       transport.send({ $case: 'chat', chat: {message: ev.text, timestamp: Date.now()} })
       // transport.sendChat({ message: ev.text, timestamp: Date.now() })
     })
 
     // Listen for teleport requests coming from the UI, and update our heartbeat report:
-    app.events.on('teleport', ev => {
+    app.on('teleport', ev => {
       wantedPosition = ev.position
       wantedIsland = ev.island
     })
 
     // Listen for address inspection requests coming from the UI, and request profiles:
-    app.events.on('request-profile', async ({ address }) => {
+    app.on('request-profile', async ({ address }) => {
       transport.send({ $case: 'profileRequest', profileRequest: {address, profileVersion: 0} }) // TODO explain 0
 
-      for await (let ev of transport.streamCase('profileResponse')) {
+      for await (let ev of transport.receive('profileResponse')) {
         if (ev.peer === address) {
           app.setRequestedProfile(JSON.parse(ev.message.profileResponse.serializedProfile))
           break

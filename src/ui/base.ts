@@ -1,19 +1,8 @@
-import { AppEvent, Emitter } from "../util"
+import { EmitterEvent, Emitter } from "../util"
 
 
-export abstract class View<E extends AppEvent = never> {
+export abstract class View<E extends EmitterEvent = never> extends Emitter<E> {
   abstract $root: HTMLElement
-
-  events: Omit<Emitter<E>, 'emit'>
-  private emitter: Emitter<E>
-  
-  constructor() {
-    this.events = this.emitter = new Emitter<E>()
-  }
-
-  protected emit(event: E) {
-    this.emitter.emit(event)
-  }
 
   protected query(selector: string): HTMLElement {
     return this.$root.querySelector(selector)!
@@ -28,7 +17,7 @@ export abstract class View<E extends AppEvent = never> {
   }
 }
 
-export abstract class StepView<E extends AppEvent> extends View<E> {
+export abstract class StepView<E extends EmitterEvent> extends View<E> {
   show() {
     this.$root.style.display = 'block'
     setTimeout(() => this.$root.style.opacity = '1', 1)

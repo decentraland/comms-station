@@ -1,3 +1,4 @@
+import { Events } from "../util"
 import { Transport, TransportMessage } from "./base"
 
 
@@ -30,7 +31,7 @@ export abstract class WebSocketTransport<
 
     this.ws = ws
 
-    await this.next('connected')
+    await Events.next(this, 'connected')
   }
 
   disconnect() {
@@ -42,18 +43,18 @@ export abstract class WebSocketTransport<
   }
 
   private onOpen = (_: Event) => {
-    this.emit({ type: 'connected' })
+    this.emit({ $case: 'connected' })
   }
 
   private onMessage = (ev: MessageEvent) => {
-    this.emit({ type: 'message', message: this.decode(new Uint8Array(ev.data)) })
+    this.emit({ $case: 'message', message: this.decode(new Uint8Array(ev.data)) })
   }
 
   private onError = (_: Event) => {
-    this.emit({ type: 'error' }) // fun fact: the ws error event doesn't contain any error info :)
+    this.emit({ $case: 'error' }) // fun fact: the ws error event doesn't contain any error info :)
   }
 
   private onClose = (ev: CloseEvent) => {
-    this.emit({ type: 'disconnected', reason: `${ev.code}: ${ev.reason}` })
+    this.emit({ $case: 'disconnected', reason: `${ev.code}: ${ev.reason}` })
   }
 }

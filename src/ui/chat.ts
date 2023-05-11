@@ -4,9 +4,9 @@ import { cloneTemplate, StepView, View } from "./base"
 
 
 export type ChatRoomEvent = 
-  | { type: 'send', text: string }
-  | { type: 'teleport', x: number, y: number, island?: string }
-  | { type: 'request-profile', address: string }
+  | { $case: 'send', text: string }
+  | { $case: 'teleport', x: number, y: number, island?: string }
+  | { $case: 'request-profile', address: string }
 
 export class ChatRoomView extends StepView<ChatRoomEvent> {
   $root = cloneTemplate('template-chat-room')
@@ -51,8 +51,8 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     chatMessage.setText(text)
     
     if (sender.startsWith('0x')) {
-      chatMessage.events.on('click-sender', () => {
-        this.emit({ type: 'request-profile', address: sender })
+      chatMessage.on('click-sender', () => {
+        this.emit({ $case: 'request-profile', address: sender })
       })
     }
 
@@ -87,7 +87,7 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     const text = this.$chatInput.value
     
     this.addMessage("You", text)
-    this.emit({ type: 'send', text })
+    this.emit({ $case: 'send', text })
 
     this.$chatInput.value = ""
     this.scrollLogToBottom()
@@ -99,7 +99,7 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     const island = this.$islandInput.value
 
     this.addMessage("You", `* Teleporting to (${x}, ${y}) *`)
-    this.emit({ type: 'teleport', x, y, island })
+    this.emit({ $case: 'teleport', x, y, island })
 
     this.scrollLogToBottom()
   }
@@ -130,7 +130,7 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
 
 
 type ChatMessageEvent = 
-  | { type: 'click-sender', address: string }
+  | { $case: 'click-sender', address: string }
 
 export class ChatMessageView extends View<ChatMessageEvent> {
   $root = cloneTemplate('template-chat-room-message')
@@ -149,7 +149,7 @@ export class ChatMessageView extends View<ChatMessageEvent> {
   }
   
   private onSenderClick = () => {
-    this.emit({ type: 'click-sender', address: this.$sender.innerText })
+    this.emit({ $case: 'click-sender', address: this.$sender.innerText })
   }
 
   private get $sender(): HTMLAnchorElement { return this.$ref('sender') }

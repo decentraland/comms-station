@@ -48,23 +48,23 @@ export abstract class LiveKitTransport<
   }
 
   private onConnected = () => {
-    this.emit({ type: 'connected' })
+    this.emit({ $case: 'connected' })
   }
 
   private onDisconnected = (reason?: DisconnectReason) => {
-    this.emit({ type: 'disconnected', reason: `${reason}` })
+    this.emit({ $case: 'disconnected', reason: `${reason}` })
   }
 
   private onParticipantConnected = (p: RemoteParticipant) => {
-    this.emit({ type: 'connected', peer: p.identity })
+    this.emit({ $case: 'connected', peer: p.identity })
   }
 
   private onParticipantDisconnected = (p: RemoteParticipant) => {
-    this.emit({ type: 'disconnected', peer: p.identity })
+    this.emit({ $case: 'disconnected', peer: p.identity })
   }
 
   private onDataReceived = (payload: Uint8Array, p?: Participant, _?: DataPacket_Kind) => {
-    this.emit({ type: 'message', peer: p?.identity, message: this.decode(payload) })
+    this.emit({ $case: 'message', peer: p?.identity, message: this.decode(payload) })
   }
 }
 

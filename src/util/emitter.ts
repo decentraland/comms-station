@@ -1,90 +1,62 @@
 import { ManagedPromise } from "./mpromise"
 
-// AppEvent is simply an object with a type, meant to be extended.
-export type AppEvent = {
-  type: string
+type Cased = {
+  $case: string
 }
 
-// SubType can narrow type information of AppEvents to allow the compiler to verify it.
-export type SubType<E extends AppEvent, T> = Extract<E, {type: T}>
+export type Case<Cs extends Cased, C> = Extract<Cs, {$case: C}>
+
+// AppEvent is simply an object with a type, meant to be extended.
+export type EmitterEvent = {
+  $case: string
+}
 
 
 // Receiver is a function that takes an event of some type.
-export type Receiver<E extends AppEvent> = (event: E) => unknown
+export type Receiver<E extends EmitterEvent> = (event: E) => unknown
 
 
 // Emitter is a utility type for eventful objects, to easily provide on/off listeners.
-export class Emitter<E extends AppEvent> {
-  private receivers = new Map<E['type'] | '*', Set<Receiver<E>>>()
+export class Emitter<T extends EmitterEvent> {
+  private receivers = new Map<T['$case'] | '*', Set<Receiver<T>>>()
 
-  // Start calling a receiver with events of a given type.
-  on<T extends E['type']>(type: T, receiver: Receiver<SubType<E, T>>) {
-    this.getOrCreateSet(type).add(receiver as any)
+  // on adds a receiver for events of any ('*') case.
+  on($case: '*', receiver: Receiver<T>): Emitter<T>
+
+  // on adds a receiver for events of a given case.
+  on<C extends T['$case']>($case: C, receiver: Receiver<Case<T, C>>): Emitter<T>
+
+  // on (base overload)
+  on($case: string, receiver: any) {
+    this.getOrCreateSet($case).add(receiver)
     return this
   }
 
-  // Stop calling a receiver with events of a given type.
-  off<T extends E['type']>(type: T, receiver: Receiver<SubType<E, T>>) {
-    this.getOrCreateSet(type).delete(receiver as any)
+  // off removes a receiver for events of any ('*') case (it can still receive specific cases).
+  off($case: '*', receiver: Receiver<T>): Emitter<T>
+
+  // off removes a receiver for events of a given case.
+  off<C extends T['$case']>($case: C, receiver: Receiver<Case<T, C>>): Emitter<T>
+
+  // off (base overload)
+  off($case: string, receiver: any) {
+    this.getOrCreateSet($case).delete(receiver as any)
     return this
   }
 
-  // Stop calling all receivers.
+  // offAll removes all receivers from all event cases (including '*').
   offAll() {
     this.receivers.clear()
     return this
   }
 
-  // Return a Promise for the next event of a given type.
-  async next<T extends E['type']>(type: T): Promise<SubType<E, T>> {
-    return (await this.stream(type).next()).value // will never be `done`
-  }
-
-  // Return an AsyncGenerator to stream events of a given type.
-  async* stream<T extends E['type']>(type: T): AsyncGenerator<SubType<E, T>> {
-    for await (let ev of this.streamAny()) {
-      if (ev.type == type) yield ev as SubType<E, T>
-    }
-  }
-
-  // Start calling a receiver on events of any type.
-  onAny(receiver: Receiver<E>) {
-    this.getOrCreateSet('*').add(receiver)
-    return this
-  }
-
-  // Stop calling a receiver on events of any type (still call if receiver was bound to specific types).
-  offAny(receiver: Receiver<E>) {
-    this.getOrCreateSet('*').delete(receiver)
-    return this
-  }
-
-  // Return a Promise for the next event of any type.
-  async nextAny() {
-    return (await this.streamAny().next()).value // will never be `done`
-  }
-
-  // Return an AsyncGenerator to stream events of any type.
-  async* streamAny(): AsyncGenerator<E> {
-    let promise = new ManagedPromise<E>()
-
-    this.onAny(ev => {
-      promise.resolve(ev)
-      promise = new ManagedPromise<E>()
-    })
-
-    while (true) {
-      yield promise
-    }
-  }
-
-  // Call all relevant receivers of an event (synchronously, in unspecified order).
-  emit(event: E) {
-    this.getOrCreateSet(event.type).forEach(receiver => receiver(event))
+  // emit calls all relevant receivers of an event (synchronously, in unspecified order).
+  protected emit(event: T) {
+    this.getOrCreateSet(event.$case).forEach(receiver => receiver(event))
     this.getOrCreateSet('*').forEach(receiver => receiver(event))
   }
 
-  private getOrCreateSet(type: E['type']) {
+  private getOrCreateSet(type: string) {
     let receiverSet = this.receivers.get(type)
     
     if (! receiverSet) {
@@ -94,3 +66,45 @@ export class Emitter<E extends AppEvent> {
     return receiverSet
   }
 }
+
+
+// Events is a utility method collection (kept separate from Emitter to reduce inherited interface).
+export const Events = {
+  stream,
+  next
+}
+
+
+// stream returns an AsyncGenerator to iterate events of any ('*') case.
+function stream<E extends EmitterEvent>(emitter: Emitter<E>, $case: '*'): AsyncGenerator<E>
+
+// stream an AsyncGenerator to iterate events of a given case.
+function stream<E extends EmitterEvent, C extends E['$case']>(emitter: Emitter<E>, $case: C): AsyncGenerator<Case<E, C>>
+
+// stream (base overload)
+async function* stream(emitter: Emitter<any>, $case: string): AsyncGenerator<any> {
+  let promise = new ManagedPromise<any>()
+
+  emitter.on($case, ev => {
+    promise.resolve(ev)
+    promise = new ManagedPromise<any>()
+  })
+
+  while (true) {
+    yield promise
+  }
+}
+
+
+// next returns a Promise for the next event of any ('*') case.
+function next<E extends EmitterEvent>(emitter: Emitter<E>, $case: '*'): Promise<E>
+
+// next returns a Promise for the next event a given case.
+function next<E extends EmitterEvent, C extends E['$case']>(emitter: Emitter<E>, $case: C): Promise<Case<E, C>>
+
+// next (base overload)
+async function next(emitter: Emitter<any>, $case: string) {
+  return (await stream(emitter, $case).next()).value // will never be `done`
+}
+
+

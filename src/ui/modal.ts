@@ -2,7 +2,7 @@ import { View, cloneTemplate } from "./base"
 
 
 type ModalEvents =
-  | { type: 'close' }
+  | { $case: 'close' }
 
 
 export class ModalView<T extends View<any>> extends View<ModalEvents> {
@@ -15,7 +15,7 @@ export class ModalView<T extends View<any>> extends View<ModalEvents> {
   }
 
   private onBackdropClick = () => {
-    this.emit({ type: 'close' })
+    this.emit({ $case: 'close' })
   }
 
   private get $backdrop(): HTMLElement { return this.$ref('backdrop') }

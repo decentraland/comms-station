@@ -2,7 +2,7 @@ import { View, cloneTemplate } from "./base"
 
 
 type RequestProfileEvents =
-  | { type: 'request', address: string }
+  | { $case: 'request', address: string }
 
 
 export class RequestProfileView extends View<RequestProfileEvents> {
@@ -28,7 +28,7 @@ export class RequestProfileView extends View<RequestProfileEvents> {
   }
 
   private onSendClick = () => {
-    this.emit({ type: 'request', address: this.$address.innerText })
+    this.emit({ $case: 'request', address: this.$address.innerText })
     this.$send.classList.add('disabled')
     this.$send.innerText = "Waiting..."
   }

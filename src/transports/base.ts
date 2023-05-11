@@ -1,16 +1,17 @@
-import { Emitter } from "../util/emitter"
+import { Emitter, Events } from "../util"
 
 export type TransportMessage = { $case: string }
 
 export type TransportEvent<Incoming extends TransportMessage> =
-  | { type: 'connected', peer?: string }                     // we or a peer just connected
-  | { type: 'message', peer?: string, message: Incoming }    // the server or a peer sent a message
-  | { type: 'disconnected', peer?: string, reason?: string } // we or a peer just disconnected
-  | { type: 'error', error?: Error }                         // an error occured (sorry)
+  | { $case: 'connected', peer?: string }                     // we or a peer just connected
+  | { $case: 'message', peer?: string, message: Incoming }    // the server or a peer sent a message
+  | { $case: 'disconnected', peer?: string, reason?: string } // we or a peer just disconnected
+  | { $case: 'error', error?: Error }                         // an error occured (sorry)
 
 
+// MessageEvent is a utility type to simplify definitions below.
 type MessageEvent<M extends TransportMessage, T extends M['$case']> = { 
-  type: 'message',
+  $case: 'message',
   peer?: string,
   message: Extract<M, {$case: T}>
 }
@@ -26,13 +27,12 @@ export abstract class Transport<
 
   abstract disconnect(): void
 
-  async nextCase<C extends Incoming['$case']>($case: C): Promise<MessageEvent<Incoming, C>> {
-    const next = await this.streamCase($case).next()
-    return next.value!
+  async receiveOne<C extends Incoming['$case']>($case: C): Promise<MessageEvent<Incoming, C>> {
+    return (await this.receive($case).next()).value!
   }
 
-  async* streamCase<C extends Incoming['$case']>($case: C) {
-    for await (let ev of this.stream('message')) {
+  async* receive<C extends Incoming['$case']>($case: C) {
+    for await (let ev of Events.stream(this, 'message')) {
       if (ev.message.$case == $case) yield ev as MessageEvent<Incoming, C>
     }
   }

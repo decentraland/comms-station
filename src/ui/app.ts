@@ -1,8 +1,12 @@
 import { Position } from "@dcl/protocol/out-ts/decentraland/common/vectors.gen"
-import { AdapterMessage } from "../adapters/base"
-import { Island, Realm } from "../services/archipelago"
-import { lastOf } from "../util"
+import { Island } from "../services/archipelago"
+import { Incoming } from "../services/comms"
+import { Realm } from "../services/realms"
+import { Events, lastOf } from "../util"
 import { View, cloneTemplate } from "./base"
+import { ChatRoomView } from "./chat"
+import { ModalView } from "./modal"
+import { RequestProfileView } from "./profile"
 import {
   AwaitIslandView,
   CreateIdentityView,
@@ -15,15 +19,12 @@ import {
   StartHeartbeatView,
   WelcomeView
 } from "./steps"
-import { RequestProfileView } from "./profile"
-import { ModalView } from "./modal"
-import { ChatRoomView } from "./chat"
 
 
 export type AppEvent =
-  | { type: 'send-chat', text: string }
-  | { type: 'request-profile', address: string }
-  | { type: 'teleport', position: Position, island?: string }
+  | { $case: 'send-chat', text: string }
+  | { $case: 'request-profile', address: string }
+  | { $case: 'teleport', position: Position, island?: string }
 
 
 export class AppView extends View<AppEvent> {
@@ -49,21 +50,21 @@ export class AppView extends View<AppEvent> {
     this.$root.appendChild(this.welcome.$root)
     this.welcome.show()
 
-    await this.welcome.events.next('start')
+    await Events.next(this.welcome, 'start')
   }
 
   async askCreateIdentity() {
     this.$root.appendChild(this.createIdentity.$root)
     this.createIdentity.show()
 
-    await this.createIdentity.events.next('create')
+    await Events.next(this.createIdentity, 'create')
   }
 
   async askDiscoverRealms() {
     this.$root.appendChild(this.discoverRealms.$root)
     this.discoverRealms.show()
 
-    await this.discoverRealms.events.next('discover')
+    await Events.next(this.discoverRealms, 'discover')
   }
 
   async askSelectRealm(realms: Realm[]) {
@@ -72,7 +73,7 @@ export class AppView extends View<AppEvent> {
     this.$root.appendChild(this.selectRealm.$root)
     this.selectRealm.show()
 
-    const { realm } = await this.selectRealm.events.next('select')
+    const { realm } = await Events.next(this.selectRealm, 'select')
     return { realm }
   }
 
@@ -80,7 +81,7 @@ export class AppView extends View<AppEvent> {
     this.$root.appendChild(this.requestChallenge.$root)
     this.requestChallenge.show()
 
-    await this.requestChallenge.events.next('request')
+    await Events.next(this.requestChallenge, 'request')
   }
 
   async askRespondChallenge(challenge: string) {
@@ -89,14 +90,14 @@ export class AppView extends View<AppEvent> {
     this.$root.appendChild(this.respondChallenge.$root)
     this.respondChallenge.show()
 
-    await this.respondChallenge.events.next('respond')
+    await Events.next(this.respondChallenge, 'respond')
   }
 
   async askStartHeartbat() {
     this.$root.appendChild(this.startHeartbeat.$root)
     this.startHeartbeat.show()
 
-    await this.startHeartbeat.events.next('start')
+    await Events.next(this.startHeartbeat, 'start')
   }
 
   showWaitingForIsland() {
@@ -115,7 +116,7 @@ export class AppView extends View<AppEvent> {
     this.$root.appendChild(nextView.$root)
     nextView.show()
 
-    await nextView.events.next('join')
+    await Events.next(nextView, 'join')
   }
 
   showChat(island: Island) {
@@ -130,15 +131,15 @@ export class AppView extends View<AppEvent> {
       nextView.addMessage(peer, "was already here")
     }
     
-    nextView.events.on('send', ({ text }) => 
-      this.emit({ type: 'send-chat', text })
+    nextView.on('send', ({ text }) => 
+      this.emit({ $case: 'send-chat', text })
     )
 
-    nextView.events.on('teleport', ({ x, y, island }) => 
-      this.emit({ type: 'teleport', position: {x, y, z: 0}, island })
+    nextView.on('teleport', ({ x, y, island }) => 
+      this.emit({ $case: 'teleport', position: {x, y, z: 0}, island })
     )
 
-    nextView.events.on('request-profile', ({ address }) => {
+    nextView.on('request-profile', ({ address }) => {
       this.showRequestProfile(address)
     })
 
@@ -168,18 +169,18 @@ export class AppView extends View<AppEvent> {
     
     this.requestProfile.setAddress(address)
     
-    this.requestProfile.events.on('request', _ => {
-      this.emit({ type: 'request-profile', address })
+    this.requestProfile.on('request', _ => {
+      this.emit({ $case: 'request-profile', address })
     })
 
-    modal.events.on('close', _ => {
+    modal.on('close', _ => {
       modal.$root.remove()
     })
 
     this.$root.prepend(modal.$root)
   }
 
-  handleMessage(sender: string, msg: AdapterMessage) {
+  handleMessage(sender: string, msg: Incoming) {
     const chatRoom = lastOf(this.chatRooms)
     if (! chatRoom) return
 

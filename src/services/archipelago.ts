@@ -26,9 +26,9 @@ export interface Peer {
 
 // ArchipelagoEvent is the type of events emitted by the ArchipelagoClient.
 type ArchipelagoEvent =
-  | { type: 'connected' }
-  | { type: 'island_changed', island: Island }
-  | { type: 'disconnected' }
+  | { $case: 'connected' }
+  | { $case: 'island_changed', island: Island }
+  | { $case: 'disconnected' }
 
 
   // ArchipelagoClient implements the Archipelago protocol, its messages and flows.
@@ -38,7 +38,7 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
   constructor(realm: Realm) {
     super()
     this.transport = new ArchipelagoTransport(realm)
-    this.transport.onAny(this.onTransportMessage)
+    this.transport.on('*', this.onTransportMessage)
   }
 
   async connect(): Promise<void> {
@@ -53,7 +53,7 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
       challengeRequest: { address }
     })
     
-    const { challengeResponse } = (await this.transport.nextCase('challengeResponse')).message
+    const { challengeResponse } = (await this.transport.receiveOne('challengeResponse')).message
 
     return challengeResponse.challengeToSign
   }
@@ -66,7 +66,7 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
       signedChallenge: { authChainJson: JSON.stringify(authChain) }
     })
 
-    const { welcome } = (await this.transport.nextCase('welcome')).message
+    const { welcome } = (await this.transport.receiveOne('welcome')).message
 
     return { id: welcome.peerId }
   }
@@ -82,13 +82,13 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
 
   // onTransportMessage is attached to our transport in order to handle and re-emit relevant events.
   private onTransportMessage = (ev: TransportEvent<Incoming>) => {
-    if (ev.type == 'connected') {
-      this.emit({ type: 'connected' })
+    if (ev.$case == 'connected') {
+      this.emit({ $case: 'connected' })
 
-    } else if (ev.type == 'disconnected') {
-      this.emit({ type: 'disconnected' })
+    } else if (ev.$case == 'disconnected') {
+      this.emit({ $case: 'disconnected' })
 
-    } else if (ev.type == 'message' && ev.message.$case == 'islandChanged') {
+    } else if (ev.$case == 'message' && ev.message.$case == 'islandChanged') {
       const info = ev.message.islandChanged
 
       const adapter = info.connStr.split(":", 1)[0] // e.g. livekit:https://...
@@ -96,7 +96,7 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
       const id = info.islandId
       const peers = Object.keys(info.peers)
 
-      this.emit({ type: 'island_changed', island: { id, adapter, uri, peers } })
+      this.emit({ $case: 'island_changed', island: { id, adapter, uri, peers } })
     }
   }
 }

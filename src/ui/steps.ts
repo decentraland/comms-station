@@ -1,9 +1,10 @@
-import { Island, Realm } from "../services/archipelago"
+import { Island } from "../services/archipelago"
+import { Realm } from "../services/realms"
 import { View, StepView, cloneTemplate } from "./base"
 
 
 export type WelcomeEvent = 
-  | { type: 'start' }
+  | { $case: 'start' }
 
 
 export class WelcomeView extends StepView<WelcomeEvent> {
@@ -15,7 +16,7 @@ export class WelcomeView extends StepView<WelcomeEvent> {
   }
 
   private onStartClick = () => {
-    this.emit({ type: 'start' })
+    this.emit({ $case: 'start' })
     this.$start.classList.add('disabled')
   }
 
@@ -26,7 +27,7 @@ export class WelcomeView extends StepView<WelcomeEvent> {
 // -------------------------------------------------------------------------------------------------
 
 export type CreateIdentityEvent = 
-  | { type: 'create' }
+  | { $case: 'create' }
 
 
 export class CreateIdentityView extends StepView<CreateIdentityEvent> {
@@ -38,7 +39,7 @@ export class CreateIdentityView extends StepView<CreateIdentityEvent> {
   }
 
   private onCreateClick = () => {
-    this.emit({ type: 'create' })
+    this.emit({ $case: 'create' })
     this.$create.classList.add('disabled')
   }
 
@@ -62,7 +63,7 @@ export class IdentityCreatedView extends StepView<never> {
 // -------------------------------------------------------------------------------------------------
 
 export type DiscoverRealmsEvent = 
-  | { type: 'discover' }
+  | { $case: 'discover' }
 
 
 export class DiscoverRealmsView extends StepView<DiscoverRealmsEvent> {
@@ -74,7 +75,7 @@ export class DiscoverRealmsView extends StepView<DiscoverRealmsEvent> {
   }
 
   private onDiscoverClick = () => {
-    this.emit({ type: 'discover' })
+    this.emit({ $case: 'discover' })
     this.$discover.classList.add('disabled')
   }
 
@@ -85,8 +86,8 @@ export class DiscoverRealmsView extends StepView<DiscoverRealmsEvent> {
 // -------------------------------------------------------------------------------------------------
 
 export type SelectRealmEvent = 
-| { type: 'discover' }
-| { type: 'select', realm: Realm }
+| { $case: 'discover' }
+| { $case: 'select', realm: Realm }
 
 
 export class SelectRealmView extends StepView<SelectRealmEvent> {
@@ -104,7 +105,7 @@ export class SelectRealmView extends StepView<SelectRealmEvent> {
       row.$users.innerText = `${realm.usersCount}`
 
       row.$connect.addEventListener('click', _ => {
-        this.emit({ type: 'select', realm })
+        this.emit({ $case: 'select', realm })
         this.queryAll('button').forEach($btn => $btn.classList.add('disabled'))
       })
 
@@ -126,7 +127,7 @@ class SelectRealmRowView extends View {
 // -------------------------------------------------------------------------------------------------
 
 type RequestChallengeEvent = 
-  | { type: 'request' }
+  | { $case: 'request' }
 
 
 export class RequestChallengeView extends StepView<RequestChallengeEvent> {
@@ -138,7 +139,7 @@ export class RequestChallengeView extends StepView<RequestChallengeEvent> {
   }
 
   private onRequestClick = () => {
-    this.emit({ type: 'request' })
+    this.emit({ $case: 'request' })
     this.$request.classList.add('disabled')
   }
 
@@ -149,7 +150,7 @@ export class RequestChallengeView extends StepView<RequestChallengeEvent> {
 
 
 export type RespondChallengeEvent = 
-  | { type: 'respond' }
+  | { $case: 'respond' }
 
 
 export class RespondChallengeView extends StepView<RespondChallengeEvent> {
@@ -165,7 +166,7 @@ export class RespondChallengeView extends StepView<RespondChallengeEvent> {
   }
 
   private onRequestClick = () => {
-    this.emit({ type: 'respond' })
+    this.emit({ $case: 'respond' })
     this.$respond.classList.add('disabled')
   }
 
@@ -177,7 +178,7 @@ export class RespondChallengeView extends StepView<RespondChallengeEvent> {
 
 
 export type StartHeartbeatEvent = 
-  | { type: 'start' }
+  | { $case: 'start' }
 
 export class StartHeartbeatView extends StepView<StartHeartbeatEvent> {
   $root = cloneTemplate('template-start-heartbeat')
@@ -187,7 +188,7 @@ export class StartHeartbeatView extends StepView<StartHeartbeatEvent> {
   }
 
   private onStartClick = () => {
-    this.emit({ type: 'start' })
+    this.emit({ $case: 'start' })
     this.$start.classList.add('disabled')
   }
 
@@ -205,7 +206,7 @@ export class AwaitIslandView extends StepView<RespondChallengeEvent> {
 // -------------------------------------------------------------------------------------------------
 
 export type JoinIslandEvent = 
-  | { type: 'join' }
+  | { $case: 'join' }
 
 
 export class JoinIslandView extends StepView<JoinIslandEvent> {
@@ -228,7 +229,7 @@ export class JoinIslandView extends StepView<JoinIslandEvent> {
   }
 
   private onJoinClick = () => {
-    this.emit({ type: 'join' })
+    this.emit({ $case: 'join' })
   }
 
   private get $uri() : HTMLElement { return this.$ref('uri') }
