@@ -22,6 +22,7 @@ type MessageEvent<M extends TransportMessage, T extends M['$case']> = {
   message: Extract<M, {$case: T}>
 }
 
+// Transport is a generic interface for a real-time communications protocol client.
 export abstract class Transport<
   Incoming extends TransportMessage, 
   Outgoing extends TransportMessage,
