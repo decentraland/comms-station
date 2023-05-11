@@ -105,7 +105,6 @@ async function start() {
     // Listen for chat messages coming from the UI, and send then through the adapter:
     app.on('send-chat', ev => {
       transport.send({ $case: 'chat', chat: {message: ev.text, timestamp: Date.now()} })
-      // transport.sendChat({ message: ev.text, timestamp: Date.now() })
     })
 
     // Listen for teleport requests coming from the UI, and update our heartbeat report:
