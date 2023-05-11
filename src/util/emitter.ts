@@ -1,15 +1,12 @@
 import { ManagedPromise } from "./mpromise"
 
-type Cased = {
-  $case: string
-}
-
-export type Case<Cs extends Cased, C> = Extract<Cs, {$case: C}>
-
-// AppEvent is simply an object with a type, meant to be extended.
+// EmitterEvent is simply an object with a $case, meant to be extended.
 export type EmitterEvent = {
   $case: string
 }
+
+// Case is the subtype of an EmitterEvent union for a particular $case.
+export type Case<Cs extends EmitterEvent, C> = Extract<Cs, {$case: C}>
 
 
 // Receiver is a function that takes an event of some type.
