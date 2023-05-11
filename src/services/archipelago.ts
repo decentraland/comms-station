@@ -53,7 +53,7 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
       challengeRequest: { address }
     })
     
-    const { challengeResponse } = (await this.transport.receiveOne('challengeResponse')).message
+    const { challengeResponse } = (await this.transport.receive('challengeResponse')).message
 
     return challengeResponse.challengeToSign
   }
@@ -66,7 +66,7 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
       signedChallenge: { authChainJson: JSON.stringify(authChain) }
     })
 
-    const { welcome } = (await this.transport.receiveOne('welcome')).message
+    const { welcome } = (await this.transport.receive('welcome')).message
 
     return { id: welcome.peerId }
   }

@@ -118,7 +118,7 @@ async function start() {
     app.on('request-profile', async ({ address }) => {
       transport.send({ $case: 'profileRequest', profileRequest: {address, profileVersion: 0} }) // TODO explain 0
 
-      for await (let ev of transport.receive('profileResponse')) {
+      for await (let ev of transport.receiveMany('profileResponse')) {
         if (ev.peer === address) {
           app.setRequestedProfile(JSON.parse(ev.message.profileResponse.serializedProfile))
           break

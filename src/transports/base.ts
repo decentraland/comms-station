@@ -27,11 +27,11 @@ export abstract class Transport<
 
   abstract disconnect(): void
 
-  async receiveOne<C extends Incoming['$case']>($case: C): Promise<MessageEvent<Incoming, C>> {
-    return (await this.receive($case).next()).value!
+  async receive<C extends Incoming['$case']>($case: C): Promise<MessageEvent<Incoming, C>> {
+    return (await this.receiveMany($case).next()).value!
   }
 
-  async* receive<C extends Incoming['$case']>($case: C) {
+  async* receiveMany<C extends Incoming['$case']>($case: C) {
     for await (let ev of Events.stream(this, 'message')) {
       if (ev.message.$case == $case) yield ev as MessageEvent<Incoming, C>
     }
