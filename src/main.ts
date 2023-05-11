@@ -77,7 +77,7 @@ async function start() {
 
   // Start listening for island assignments from Archipelago, switch adapters as we receive them:
   await archipelagoClient.on('island_changed', async (ev) => {
-    const { island } = ev // TODO: only LiveKit is supported right now
+    const { island } = ev
 
     app.offAll() // TODO be specific, this is a footgun
     

@@ -2,13 +2,19 @@ import { Room, RoomEvent, DataPacket_Kind, DisconnectReason, RemoteParticipant, 
 import { TransportMessage, Transport } from "./base"
 
 
+// LiveKitTransport implements the Transport generic interface on a LiveKit backend.
 export abstract class LiveKitTransport<
   Incoming extends TransportMessage, 
   Outgoing extends TransportMessage, 
 > extends Transport<Incoming, Outgoing> {
   
-  protected readonly uri: string
+  // url is the room-specific address of a LiveKit room.
+  protected readonly url: string
+
+  // token is the pre-authorized string we need to be allowed in.
   protected readonly token: string
+
+  // room is the LiveKit SDK object to send/receive events (initialized in `connect`).
   protected room?: Room
 
   abstract decode(data: Uint8Array): Incoming
@@ -21,12 +27,12 @@ export abstract class LiveKitTransport<
     const token = url.searchParams.get('access_token')!
     url.searchParams.delete('access_token')
 
-    this.uri = url.toString()
+    this.url = url.toString()
     this.token = token
   }
 
   async connect(): Promise<void> {
-    console.log("Connecting to", this.uri)
+    console.log("Connecting to", this.url)
     this.room = new Room({})
 
     this.room
@@ -36,7 +42,7 @@ export abstract class LiveKitTransport<
       .on(RoomEvent.ParticipantDisconnected, this.onParticipantDisconnected)
       .on(RoomEvent.DataReceived, this.onDataReceived)
 
-    await this.room.connect(this.uri, this.token)
+    await this.room.connect(this.url, this.token)
   }
 
   async send(message: Outgoing): Promise<void> {

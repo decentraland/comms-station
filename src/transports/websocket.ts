@@ -2,6 +2,7 @@ import { Events } from "../util"
 import { Transport, TransportMessage } from "./base"
 
 
+// LiveKitTransport implements the Transport generic interface on a WebSocket backend.
 export abstract class WebSocketTransport<
   Incoming extends TransportMessage, 
   Outgoing extends TransportMessage, 
@@ -10,8 +11,13 @@ export abstract class WebSocketTransport<
   abstract decode(data: Uint8Array): Incoming
   abstract encode(message: Outgoing): Uint8Array
 
+  // url is a websocket endpoint, the 1st parameter for the WebSocket constructor.
   private url: string
+
+  // protocol is an implementation-decided string, the 2nd paramter for the WebSocket constructor.
   private protocol: string
+
+  // ws is the actual WebSocket instance, using the available impl (initialized in `connect`).
   private ws!: WebSocket
   
   constructor(url: string,protocol: string) {
