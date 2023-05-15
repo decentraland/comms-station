@@ -41,7 +41,7 @@ export abstract class LiveKitTransport<
       .on(RoomEvent.ParticipantConnected, this.onParticipantConnected)
       .on(RoomEvent.ParticipantDisconnected, this.onParticipantDisconnected)
       .on(RoomEvent.DataReceived, this.onDataReceived)
-
+      
     await this.room.connect(this.url, this.token)
   }
 

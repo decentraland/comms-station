@@ -75,13 +75,13 @@ async function start() {
   let wantedPosition: Position = {x: 1, y: 0, z: 0} // an initial position, user can TELEPORT later
   let wantedIsland: string | undefined // the island assignment we'll specifically request, if any
 
-  // Start listening for island assignments from Archipelago, switch adapters as we receive them:
+  // Start listening for island assignments from Archipelago, switch transports as we receive them:
   await archipelagoClient.on('island_changed', async (ev) => {
     const { island } = ev
 
     app.offAll() // TODO be specific, this is a footgun
     
-    // Disconnect the previous adapter, if we had one:
+    // Disconnect the previous transport, if we had one:
     if (transport) {
       transport.offAll()
       transport.disconnect()
@@ -90,7 +90,7 @@ async function start() {
     // Show information about the island and wait for the user to click JOIN:
     await app.askJoinIsland(island)
 
-    // Create the new adapter (it won't connect automatically):
+    // Create the new transport (it won't connect automatically):
     transport = new LiveKitCommsTransport(island.uri)
 
     // Attach listeners for all relevant events:
@@ -99,10 +99,10 @@ async function start() {
       .on('disconnected', console.log)
       .on('connected', console.log)
 
-    // Connect the adapter:
+    // Connect the transport:
     await transport.connect()
 
-    // Listen for chat messages coming from the UI, and send then through the adapter:
+    // Listen for chat messages coming from the UI, and send then through the transport:
     app.on('send-chat', ev => {
       transport.send({ $case: 'chat', chat: {message: ev.text, timestamp: Date.now()} })
     })

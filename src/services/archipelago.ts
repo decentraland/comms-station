@@ -12,7 +12,7 @@ type Outgoing = NonNullable<ClientPacket['message']>
 // Island is the information provided by Archipelago to hvae us join a group of nearby players.
 export interface Island {
   id: string
-  adapter: string
+  transport: string
   uri: string
   peers: string[]
 }
@@ -91,12 +91,12 @@ export class ArchipelagoClient extends Emitter<ArchipelagoEvent> {
     } else if (ev.$case == 'message' && ev.message.$case == 'islandChanged') {
       const info = ev.message.islandChanged
 
-      const adapter = info.connStr.split(":", 1)[0] // e.g. livekit:https://...
-      const uri = info.connStr.slice(adapter.length + 1)
+      const transport = info.connStr.split(":", 1)[0] // e.g. livekit:https://...
+      const uri = info.connStr.slice(transport.length + 1)
       const id = info.islandId
       const peers = Object.keys(info.peers)
 
-      this.emit({ $case: 'island_changed', island: { id, adapter, uri, peers } })
+      this.emit({ $case: 'island_changed', island: { id, transport, uri, peers } })
     }
   }
 }

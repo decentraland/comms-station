@@ -219,7 +219,7 @@ export class JoinIslandView extends StepView<JoinIslandEvent> {
 
   setIsland(island: Island) {
     this.$island.innerText = island.id
-    this.$adapter.innerText = island.adapter
+    this.$transport.innerText = island.transport
     this.$uri.innerText = this.formatUri(island.uri)
   }
 
@@ -234,7 +234,7 @@ export class JoinIslandView extends StepView<JoinIslandEvent> {
 
   private get $uri() : HTMLElement { return this.$ref('uri') }
   private get $island() : HTMLElement { return this.$ref('island') }
-  private get $adapter(): HTMLElement { return this.$ref('adapter') }
+  private get $transport(): HTMLElement { return this.$ref('transport') }
   private get $join(): HTMLElement { return this.$ref('join') }
 }
 

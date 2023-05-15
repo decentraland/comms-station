@@ -66,7 +66,7 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
 
   setIsland(island: Island) {
     this.$island.innerText = island.id
-    this.$adapter.innerText = island.adapter
+    this.$transport.innerText = island.transport
     this.$nPeers.innerText = `${island.peers.length}`
   }
 
@@ -111,7 +111,7 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
   }
 
   private get $island() : HTMLElement { return this.$ref('island') }
-  private get $adapter(): HTMLElement { return this.$ref('adapter') }
+  private get $transport(): HTMLElement { return this.$ref('transport') }
   private get $nPeers() : HTMLElement { return this.$ref('npeers') }
 
   private get $chatInput()  : HTMLInputElement { return this.$ref('chat-input') }
