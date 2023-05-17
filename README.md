@@ -10,7 +10,7 @@ Use the [deployed version](https://decentraland.github.io/comms-station/), or ru
 
 ```
 npm install
-npx vite
+npm run dev
 ```
 
 This will start a `localhost` dev server.
