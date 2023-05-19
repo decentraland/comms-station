@@ -6,7 +6,7 @@ Using the station, you'll be able to manually operate a simple but reasonably fe
 
 ### Getting Started
 
-Use the deployed version at [[url]], or run it locally with:
+Use the [deployed version](https://decentraland.github.io/comms-station/), or run it locally with:
 
 ```
 npm install
