@@ -163,6 +163,7 @@ export class RequestChallengeView extends StepView<RequestChallengeEvent> {
 
   private onRequestClick = () => {
     this.emit({ $case: 'request' })
+    this.disable()
   }
 
   disable() {
@@ -264,6 +265,7 @@ export class JoinIslandView extends StepView<JoinIslandEvent> {
 
   private onJoinClick = () => {
     this.emit({ $case: 'join' })
+    this.disable()
   }
 
   private get $uri() : HTMLElement { return this.$ref('uri') }
