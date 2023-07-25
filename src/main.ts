@@ -51,7 +51,7 @@ async function start() {
   // Initialize the Archipelago client, attach some listeners and connect to the realm's interface:
   const archipelagoClient = new ArchipelagoClient(realm)
 
-  archipelagoCient.on('disconnected', ev => app.showConnectionLost())
+  archipelagoClient.on('disconnected', _ => app.showConnectionLost())
 
   await archipelagoClient.connect()
 
