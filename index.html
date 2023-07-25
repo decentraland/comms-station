@@ -42,11 +42,11 @@
       </p>
       <p>
         If you're familiar with these concepts, go ahead and start the station. If not, the
-        <a target="_blank" href="https://docs.decentraland.org/contributor/content/overview/">comms documentation overview</a>
+        <a target="_blank" href="https://docs.decentraland.org/contributor/comms/overview/">comms documentation overview</a>
         is a better place to begin.
       </p>
       <p>
-        You can also follow along with the station's <a target="_blank" href="#!!">source code</a>, which closely mirrors what
+        You can also follow along with the station's <a target="_blank" href="https://github.com/decentraland/comms-station/blob/master/src/main.ts">source code</a>, which closely mirrors what
         you'll see on-screen.
       </p>
 
@@ -121,6 +121,18 @@
     <td data-ref="users"></td>
     <td style="text-align: right"><button data-ref="connect">Connect</button></td>
   </tr>
+</template>
+
+<template id="template-connection-lost">
+  <div id="connection-lost" class="step box">
+    <div class="content">
+      <p>
+        We were disconnected from Archipelago. This can be caused by I/O errors, but the most 
+        frequent cause are timeouts before authentication or between expected messages. 
+        You can refresh this page to reboot the station.
+      </p>
+    </div>
+  </div>
 </template>
 
 <template id="template-request-challenge">

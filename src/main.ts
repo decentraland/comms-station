@@ -48,18 +48,23 @@ async function start() {
   // Show the list, and ask the user to SELECT one:
   const { realm } = await app.askSelectRealm(allRealms)
   
-  // Initialize the Archipelago client and connect to the realm's RPC interface:
+  // Initialize the Archipelago client, attach some listeners and connect to the realm's interface:
   const archipelagoClient = new ArchipelagoClient(realm)
+
+  archipelagoCient.on('disconnected', ev => app.showConnectionLost())
+
   await archipelagoClient.connect()
 
   // Show an explanation of how auth starts, and wait for the user to click REQUEST CHALLENGE:
-  /*await*/ app.askRequestChallenge()
+  await app.askRequestChallenge()
+
+
 
   // Begin the authentication flow by requesting a challenge from Archipelago:
   const challengeToSign = await archipelagoClient.requestChallenge(address)
 
   // Show an explanation of how auth finishes, and wait for the user to click RESPOND CHALLENGE:
-  /*await*/ app.askRespondChallenge(challengeToSign)
+  await app.askRespondChallenge(challengeToSign)
 
   // Sign the challenge string using the private key in our `identity`:
   const authChain = await Authenticator.signPayload(identity, challengeToSign)
@@ -76,7 +81,7 @@ async function start() {
   let wantedIsland: string | undefined // the island assignment we'll specifically request, if any
 
   // Start listening for island assignments from Archipelago, switch transports as we receive them:
-  await archipelagoClient.on('island_changed', async (ev) => {
+  archipelagoClient.on('island_changed', async (ev) => {
     const { island } = ev
 
     app.offAll() // TODO be specific, this is a footgun

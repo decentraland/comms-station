@@ -17,6 +17,10 @@ export class WelcomeView extends StepView<WelcomeEvent> {
 
   private onStartClick = () => {
     this.emit({ $case: 'start' })
+    this.disable()
+  }
+
+  disable() {
     this.$start.classList.add('disabled')
   }
 
@@ -40,6 +44,10 @@ export class CreateIdentityView extends StepView<CreateIdentityEvent> {
 
   private onCreateClick = () => {
     this.emit({ $case: 'create' })
+    this.disable()
+  }
+
+  disable() {
     this.$create.classList.add('disabled')
   }
 
@@ -62,6 +70,13 @@ export class IdentityCreatedView extends StepView<never> {
 
 // -------------------------------------------------------------------------------------------------
 
+export class ConnectionLostView extends StepView<never> {
+  $root = cloneTemplate('template-connection-lost')
+}
+
+
+// -------------------------------------------------------------------------------------------------
+
 export type DiscoverRealmsEvent = 
   | { $case: 'discover' }
 
@@ -76,6 +91,10 @@ export class DiscoverRealmsView extends StepView<DiscoverRealmsEvent> {
 
   private onDiscoverClick = () => {
     this.emit({ $case: 'discover' })
+    this.disable()
+  }
+
+  disable() {
     this.$discover.classList.add('disabled')
   }
 
@@ -106,11 +125,15 @@ export class SelectRealmView extends StepView<SelectRealmEvent> {
 
       row.$connect.addEventListener('click', _ => {
         this.emit({ $case: 'select', realm })
-        this.queryAll('button').forEach($btn => $btn.classList.add('disabled'))
+        this.disable()
       })
 
       this.$ref('realms').appendChild(row.$root)
     }
+  }
+
+  disable() {
+    this.queryAll('button').forEach($btn => $btn.classList.add('disabled'))
   }
 }
 
@@ -140,6 +163,9 @@ export class RequestChallengeView extends StepView<RequestChallengeEvent> {
 
   private onRequestClick = () => {
     this.emit({ $case: 'request' })
+  }
+
+  disable() {
     this.$request.classList.add('disabled')
   }
 
@@ -167,6 +193,10 @@ export class RespondChallengeView extends StepView<RespondChallengeEvent> {
 
   private onRequestClick = () => {
     this.emit({ $case: 'respond' })
+    this.disable()
+  }
+
+  disable() {
     this.$respond.classList.add('disabled')
   }
 
@@ -189,6 +219,10 @@ export class StartHeartbeatView extends StepView<StartHeartbeatEvent> {
 
   private onStartClick = () => {
     this.emit({ $case: 'start' })
+    this.disable()
+  }
+
+  disable() {
     this.$start.classList.add('disabled')
   }
 

@@ -22,7 +22,7 @@ export abstract class LiveKitTransport<
 
   constructor(uri: string) {
     super()
-
+    
     const url = new URL(uri)
     const token = url.searchParams.get('access_token')!
     url.searchParams.delete('access_token')

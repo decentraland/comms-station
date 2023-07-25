@@ -3,12 +3,13 @@ import { Island } from "../services/archipelago"
 import { Incoming } from "../services/comms"
 import { Realm } from "../services/realms"
 import { Events, lastOf } from "../util"
-import { View, cloneTemplate } from "./base"
+import { View, StepView, cloneTemplate } from "./base"
 import { ChatRoomView } from "./chat"
 import { ModalView } from "./modal"
 import { RequestProfileView } from "./profile"
 import {
   AwaitIslandView,
+  ConnectionLostView,
   CreateIdentityView,
   DiscoverRealmsView,
   IdentityCreatedView,
@@ -75,6 +76,14 @@ export class AppView extends View<AppEvent> {
 
     const { realm } = await Events.next(this.selectRealm, 'select')
     return { realm }
+  }
+
+  showConnectionLost() {
+    this.getAllViews().forEach(view => view.disable())
+    
+    const connectionLost = new ConnectionLostView()
+    this.$root.appendChild(connectionLost.$root)
+    connectionLost.show()
   }
 
   async askRequestChallenge() {
@@ -209,5 +218,20 @@ export class AppView extends View<AppEvent> {
       default:
         break
     }
+  }
+
+  private getAllViews(): StepView<any>[] {
+    return [
+      this.welcome,
+      this.discoverRealms,
+      this.selectRealm,
+      this.createIdentity,
+      this.requestChallenge,
+      this.respondChallenge,
+      this.startHeartbeat,
+      this.awaitIsland,
+      ...this.joinIslands,
+      ...this.chatRooms
+    ]
   }
 }
