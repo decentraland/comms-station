@@ -9,8 +9,16 @@ export interface Realm {
 
 // findRealms uses the lambdas API to fetch a list of public realms:
 export async function findRealms() {
-  const res = await fetch('https://realm-provider.decentraland.org/realms')
+  const res = await fetch('https://realm-provider.decentraland.zone/realms')
   const obj = await res.json()
 
-  return obj as Realm[]
+  const newRealm: Realm = {
+    url: 'https://worlds-content-server.decentraland.org/world/paralax.dcl.eth/',
+    serverName: 'parallax world',
+    usersCount: 0
+  }
+  
+  const realms: Realm[] = [...(obj as Realm[]), newRealm];
+
+  return realms
 }
