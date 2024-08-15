@@ -1,0 +1,32 @@
+.triangle {
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  cursor: grab;
+}
+
+.triangle>div {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  transform: rotate(45deg);
+  top: 13px;
+  left: 3px;
+}
+
+.container {
+  position: relative;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 600px;
+  width: 600px;
+  user-select: none;
+  border: 1px solid;
+  margin-bottom: ;
+}

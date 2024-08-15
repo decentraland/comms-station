@@ -80,7 +80,7 @@ export class AppView extends View<AppEvent> {
 
   showConnectionLost() {
     this.getAllViews().forEach(view => view.disable())
-    
+
     const connectionLost = new ConnectionLostView()
     this.$root.appendChild(connectionLost.$root)
     connectionLost.show()
@@ -139,12 +139,12 @@ export class AppView extends View<AppEvent> {
     for (let peer of island.peers) {
       nextView.addMessage(peer, "was already here")
     }
-    
-    nextView.on('send', ({ text }) => 
+
+    nextView.on('send', ({ text }) =>
       this.emit({ $case: 'send-chat', text })
     )
 
-    nextView.on('teleport', ({ x, y, island }) => 
+    nextView.on('teleport', ({ x, y, island }) =>
       this.emit({ $case: 'teleport', position: {x, y, z: 0}, island })
     )
 
@@ -167,7 +167,7 @@ export class AppView extends View<AppEvent> {
   setPosition(position: Position) {
     lastOf(this.chatRooms)?.setPosition(position)
   }
-  
+
   setRequestedProfile(profile: any) {
     this.requestProfile?.setProfile(profile)
   }
@@ -175,9 +175,9 @@ export class AppView extends View<AppEvent> {
   private showRequestProfile(address: string) {
     this.requestProfile = new RequestProfileView()
     const modal = new ModalView(this.requestProfile)
-    
+
     this.requestProfile.setAddress(address)
-    
+
     this.requestProfile.on('request', _ => {
       this.emit({ $case: 'request-profile', address })
     })
@@ -191,7 +191,7 @@ export class AppView extends View<AppEvent> {
 
   handleMessage(sender: string, msg: Incoming) {
     const chatRoom = lastOf(this.chatRooms)
-    if (! chatRoom) return
+    if (!chatRoom || !msg) return
 
     switch (msg.$case) {
       case 'chat':
@@ -214,7 +214,8 @@ export class AppView extends View<AppEvent> {
       case 'position':
         chatRoom.addMovement()
         break
-
+      case 'profileVersion':
+        break
       default:
         break
     }
