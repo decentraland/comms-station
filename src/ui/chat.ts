@@ -15,7 +15,8 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     nPeers: 0,
     nPings: 0,
     nPongs: 0,
-    nMovements: 0,
+    nMovements: {} as Map<string, number>,
+    nTotalMovements: 0
   }
 
   private lastPosition?: Position
@@ -30,6 +31,9 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
         this.$send.click()
       }
     })
+    this.stats = {
+      nMovements: new Map<string, number>(),
+    }
   }
 
   addPing() {
@@ -40,8 +44,20 @@ export class ChatRoomView extends StepView<ChatRoomEvent> {
     this.$nPongs.innerText = `${++this.stats.nPongs}`
   }
 
-  addMovement() {
-    this.$nMovements.innerText = `${++this.stats.nMovements}`
+  addMovement(sender: string) {
+    const currentCount = this.stats.nMovements.get(sender) || 0
+    this.stats.nMovements.set(sender, currentCount + 1)
+    const totalMovements = Array.from(this.stats.nMovements.values()).reduce((sum, count) => sum + count, 0)
+    this.stats.nTotalMovements = totalMovements
+
+    const movementsList = Array.from(this.stats.nMovements.entries())
+    .map(([key, value]) => {
+      const movementText = `${key}: ${value}`
+      return movementText
+    })
+    .join(', ')
+    const totalText = `Total Messages: ${totalMovements}`
+    this.$nMovements.innerText = `${movementsList}\n${totalText}`
   }
 
   addMessage(sender: string, text: string) {

@@ -55,8 +55,8 @@ export class Emitter<T extends EmitterEvent> {
 
   private getOrCreateSet(type: string) {
     let receiverSet = this.receivers.get(type)
-    
-    if (! receiverSet) {
+
+    if (!receiverSet) {
       this.receivers.set(type, receiverSet = new Set())
     }
 

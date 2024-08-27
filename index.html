@@ -14,8 +14,9 @@
 <body>
   <div id="container"></div>
   <div id="end"></div>
+  <div id="root"></div>
 
-  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 
 <template id="template-app">
@@ -84,7 +85,7 @@
       </p>
       <p>
         These servers know about each other. We can connect to the Foundation's main realm and
-        get a list of all alternatives using the <a target="_blank" href="https://realm-provider.decentraland.org/realms">https://realm-provider.decentraland.org/realms</a> 
+        get a list of all alternatives using the <a target="_blank" href="https://realm-provider.decentraland.org/realms">https://realm-provider.decentraland.org/realms</a>
         endpoint.
       </p>
       <div class="buttons">
@@ -127,8 +128,8 @@
   <div id="connection-lost" class="step box">
     <div class="content">
       <p>
-        We were disconnected from Archipelago. This can be caused by I/O errors, but the most 
-        frequent cause are timeouts before authentication or between expected messages. 
+        We were disconnected from Archipelago. This can be caused by I/O errors, but the most
+        frequent cause are timeouts before authentication or between expected messages.
         You can refresh this page to reboot the station.
       </p>
     </div>
@@ -140,7 +141,7 @@
     <h2>Start Authentication</h2>
     <div class="content">
       <p>
-        Before we can access any services, we must prove our identity by completing a 
+        Before we can access any services, we must prove our identity by completing a
         <a target="_blank" href="http://docs.decentraland.org/contributor/comms/overview/#authentication">challenge</a>.
         The server will send us a randomly generated string, and we will sign it with our private
         key.
@@ -158,7 +159,7 @@
     <div class="content">
       <p>
         We were sent the random string <code data-ref="challenge"></code>. We'll use our
-        private key to produce a valid <a target="_blank" href="https://docs.decentraland.org/contributor/auth/authchain/">authentication chain</a>, 
+        private key to produce a valid <a target="_blank" href="https://docs.decentraland.org/contributor/auth/authchain/">authentication chain</a>,
         ending with a signature for this string.
       </p>
       <p>
@@ -178,13 +179,13 @@
     <div class="content">
       <p>
         We are now connected to a realm and have successfully authenticated. The next step is
-        getting our first <a target="_blank" href="http://docs.decentraland.org/contributor/comms/overview/#islands">island assignment</a> 
-        from <a target="_blank" href="http://docs.decentraland.org/contributor/comms/archipelago/">Archipelago</a>. 
+        getting our first <a target="_blank" href="http://docs.decentraland.org/contributor/comms/overview/#islands">island assignment</a>
+        from <a target="_blank" href="http://docs.decentraland.org/contributor/comms/archipelago/">Archipelago</a>.
         For this, we have to send (and keep sending) our position in the world map.
       </p>
       <p>
         We must continue to report our position about once per second, otherwise Archipelago will
-        assume we're going offline. This periodic update is called a 
+        assume we're going offline. This periodic update is called a
         <a target="_blank" href="http://docs.decentraland.org/contributor/comms/archipelago/#heartbeat">heartbeat</a>.
       </p>
 
@@ -199,7 +200,7 @@
   <div id="await-island" class="step box">
     <div class="content">
       <p>
-        We're now sending our periodic position updates and waiting for <a target="_blank" href="http://docs.decentraland.org/contributor/comms/archipelago/">Archipelago</a> 
+        We're now sending our periodic position updates and waiting for <a target="_blank" href="http://docs.decentraland.org/contributor/comms/archipelago/">Archipelago</a>
         to assign us to an island. Let's wait...
       </p>
       <p></p>
@@ -257,10 +258,9 @@
         <button class="submit" data-ref="teleport">Teleport</button>
       </div>
 
-      <div class="stats">
-        <span data-ref="npings">0</span> pings |
-        <span data-ref="npongs">0</span> pongs |
-        <span data-ref="nmovements">0</span> movements
+      <div class="stats">      
+        <h3>Players position messages</h3>
+        <span data-ref="nmovements">0</span> 
       </div>
     </div>
   </div>
@@ -279,11 +279,11 @@
       <h2>Request Profile</h2>
       <p>
         You can ask for a peer's profile (in this case, <code data-ref="address"></code>) by sending
-        a <code>ProfileRequest</code>. Recently active clients usually send back a <code>ProfileResponse</code> 
+        a <code>ProfileRequest</code>. Recently active clients usually send back a <code>ProfileResponse</code>
         right away.
       </p>
       <p>
-        Inactive clients may not respond, and some clients (such as this one) choose to ignore these 
+        Inactive clients may not respond, and some clients (such as this one) choose to ignore these
         requests.
       </p>
 

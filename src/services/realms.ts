@@ -6,11 +6,16 @@ export interface Realm {
   usersCount: number
 }
 
+const boedoWorld: Realm = {
+  url: 'https://worlds-content-server.decentraland.org/world/paralax.dcl.eth/',
+  serverName: 'Custom World',
+  usersCount: 0
+}
 
 // findRealms uses the lambdas API to fetch a list of public realms:
 export async function findRealms() {
-  const res = await fetch('https://realm-provider.decentraland.org/realms')
-  const obj = await res.json()
-
-  return obj as Realm[]
+  return [boedoWorld]
+  // const res = await fetch('https://realm-provider.decentraland.org/realms')
+  // const obj = await res.json()
+  // return (obj as Realm[]).concat(boedoWorld)
 }
