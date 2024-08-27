@@ -212,7 +212,7 @@ export class AppView extends View<AppEvent> {
         break
 
       case 'position':
-        chatRoom.addMovement()
+        chatRoom.addMovement(sender)
         break
       case 'profileVersion':
         break

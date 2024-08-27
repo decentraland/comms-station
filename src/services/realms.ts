@@ -7,7 +7,7 @@ export interface Realm {
 }
 
 const boedoWorld: Realm = {
-  url: 'https://worlds-content-server.decentraland.org/world/boedo.dcl.eth/',
+  url: 'https://worlds-content-server.decentraland.org/world/paralax.dcl.eth/',
   serverName: 'Custom World',
   usersCount: 0
 }
