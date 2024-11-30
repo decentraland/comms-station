@@ -17,6 +17,6 @@
     "@dcl/protocol": "^1.0.0-3766287015.commit-7d88411",
     "@ethersproject/wallet": "^5.7.0",
     "livekit-client": "^1.7.1",
-    "protobufjs": "^7.2.3"
+    "protobufjs": "^7.2.4"
   }
 }
